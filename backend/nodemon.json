@@ -1,0 +1,6 @@
+{
+    "watch": ["src/**/*.{ts,tsx}"],
+    "ext": "ts,tsx",
+    "ignore": [],
+    "exec": "tsc && node dist/index.js || exit 1"
+}
