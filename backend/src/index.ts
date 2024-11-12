@@ -6,7 +6,9 @@ import { errorMiddleware, notFoundMiddleware } from './middleware/error.js';
 import { ConnectDB } from './config/db.js';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-
+import session from 'express-session';
+import passport from './config/passport.js';
+import googleRouter from './controller/googleauth.js';
 
 
 const port : string | number = process.env.PORT || 5000;
@@ -15,8 +17,22 @@ const app = express();
 //middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cors());
+
+// Sessions
+app.use(session({ 
+    secret: process.env.SESSION_SECRET as string,
+    resave: false, 
+    saveUninitialized: false, //dont create a session if something is not stored
+    }));
+
+//passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+//
+app.use('/auth', googleRouter )
 
 
 ConnectDB();
