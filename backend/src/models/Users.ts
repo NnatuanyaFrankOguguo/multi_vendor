@@ -9,6 +9,7 @@ interface IUser extends Document {
     fname: string;
     lname: string;
     email: string;
+    googleId: string;
     password: string;
     role: string;
     phoneNumber?: number;
@@ -19,10 +20,7 @@ interface IUser extends Document {
       country?: string;
       zipCode?: number;
     };
-    avatar?: {
-        public_id: string;
-        url: string;
-    }
+    avatar?: string;
     isVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -48,6 +46,12 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
         required: [true, 'Email is required'],
         unique: true,
         match: [/\S+@\S+\.\S+/, 'Please enter a valid email']
+    },
+    googleId: {
+        type: 'string',
+        sparse: true,
+        unique: true,
+        required: false,
     },
     password: {
         type: 'string',
@@ -89,15 +93,9 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
         type: String,
         default: 'user'
     },
-    avatar: {
-        public_id: {
-            type: String,
-            required: true,
-        },
-        url: {
-            type: String,
-            required: true,
-        }
+    avatar:{
+        type: String,
+        required: true,
     },
     isVerified: {
         type: Boolean,

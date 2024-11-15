@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema({
         unique: true,
         match: [/\S+@\S+\.\S+/, 'Please enter a valid email']
     },
+    googleId: {
+        type: 'string',
+        sparse: true,
+        unique: true,
+        required: false,
+    },
     password: {
         type: 'string',
         required: [true, 'Password is required'],
@@ -62,14 +68,8 @@ const userSchema = new mongoose.Schema({
         default: 'user'
     },
     avatar: {
-        public_id: {
-            type: String,
-            required: true,
-        },
-        url: {
-            type: String,
-            required: true,
-        }
+        type: String,
+        required: true,
     },
     isVerified: {
         type: Boolean,

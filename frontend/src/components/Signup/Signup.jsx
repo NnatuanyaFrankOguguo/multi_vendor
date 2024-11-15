@@ -3,9 +3,13 @@ import google from '../Login/google.png'
 import { Link } from 'react-router-dom'
 import {AiOutlineEye, AiOutlineEyeInvisible, AiOutlineUser} from 'react-icons/ai'
 import styles from '../../styles/styles'
+import { useNavigate } from 'react-router-dom'
+import server from '../../server.js'
+import axios from 'axios'
 
 const Signup = () => {
 
+    const navigate = useNavigate()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [fname, setFname] = useState()
@@ -18,6 +22,43 @@ const Signup = () => {
         const file = e.target.files[0]
         setAvatar(file)
     }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const config = {headers: {'Content-Type': 'multipart/form-data'}}
+       //now to append all those state object variables into a new form data
+       const formData = new FormData();
+       //now we have to insert all the data one by one
+       formData.append('email', email)
+       formData.append('password', password)
+       formData.append('fname', fname)
+       formData.append('lname', lname)
+       formData.append('file', avatar)
+
+        try {
+            // const config = {headers: {'Content-Type': 'multipart/form-data'}}
+            const response = await axios.post(`${server}/api/users/create-user`, formData, config);
+            alert('Signup successful! You can now login.')
+            //PUT A LOADER ICON
+            // Clear the form
+            setEmail('')
+            setPassword('')
+            setFname('')
+            setLname('')
+            setAvatar(null)
+            navigate('/')
+        } catch (error) {
+            console.error(error)
+            
+        }
+
+    }
+
+    const googleAuth = () => {
+        // Implement Google OAuth authentication here
+        window.location.href = 'http://localhost:5000/auth/google'
+        // console.log('Google OAuth authentication clicked')
+    }
     
 
   return (
@@ -29,9 +70,9 @@ const Signup = () => {
 
             <div className='mt-8 sm:mx-auto sm:w-full sm:max-v-md'>
                 <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-                    <form className='space-y-6'>
+                    <form className='space-y-6' onSubmit={handleSubmit}>
                         <div className='flex justify-center items-center gap-3  rounded-lg border-2 hover:border-green-500  hover:rounded-full cursor-pointer'>
-                            <button className='flex items-center gap-2 py-2'><img src={google} height={25} width={25} alt="google" />Sign up with Google</button>
+                            <button className='flex items-center gap-2 py-2' onClick={googleAuth}><img src={google} height={25} width={25} alt="google" />Sign up with Google</button>
                         </div>
 
                         <div className='flex items-center justify-center'>
@@ -103,7 +144,7 @@ const Signup = () => {
                                 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50'>
                                     <span>Upload an Image</span>
                                     <input type="file" name="avatar" id='file-input' accept='.jp,.jpeg,.png' onChange={fileUpload} 
-                                    className='sr-only'/>
+                                    className='sr-only' required/>
                                 </label>
 
                             </div>
