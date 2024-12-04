@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import User from '../models/Users.js';
+import sendMail from '../utils/sendMail.js';
+import { createActivationToken } from '../controller/Usercontroller.js';
 // Load environment variables
 dotenv.config({ path: './.env' });
 // Define Google strategy options
@@ -14,7 +16,7 @@ const googleOptions = {
     passReqToCallback: true, // Ensures `request` is passed to the verify function
 };
 // Configure the Google strategy
-passport.use(new GoogleStrategy(googleOptions, async (request, // The request object passed from the middleware
+passport.use(new GoogleStrategy(googleOptions, async (req, // The request object passed from the middleware
 accessToken, // The OAuth access token
 refreshToken, // The OAuth refresh token
 profile, // The profile information from Google
@@ -42,9 +44,28 @@ done // Callback function
         done(null, userEmail);
     }
     else {
+        //to create token for our user
+        const activationToken = createActivationToken(newUser);
+        //activationURL for verification of email
+        const activationURL = `http://localhost:5173/verify-email/${activationToken}`;
+        try {
+            const sendingEmail = await sendMail({
+                email: newUser.email,
+                subject: "Activate your account",
+                text: `Hello ${newUser.fname}, \nPlease click on the following link to activate your account: ${activationURL}`,
+            });
+            req.res?.status(200).json({
+                success: true,
+                message: `User created successfully. Check your email:- ${newUser.email} for activation link.`,
+                data: sendingEmail, // You can also send the activation link in the response data for immediate use
+            });
+        }
+        catch (error) {
+            return done(error);
+        }
         // If not, create a new user
-        const createUser = await User.create(newUser);
-        done(null, createUser); // Proceed with the user profile (for session management)
+        // const createUser = await User.create(newUser)
+        // done(null, createUser); // Proceed with the user profile (for session management)
     }
 }));
 // Serialize and deserialize user sessions

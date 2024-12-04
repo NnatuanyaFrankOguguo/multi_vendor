@@ -38,7 +38,8 @@ const Signup = () => {
         try {
             // const config = {headers: {'Content-Type': 'multipart/form-data'}}
             const response = await axios.post(`${server}/api/users/create-user`, formData, config);
-            alert('Signup successful! You can now login.')
+            alert(response.data.message) //do sweetalert
+            console.log(response.data.message);
             //PUT A LOADER ICON
             // Clear the form
             setEmail('')
@@ -46,7 +47,7 @@ const Signup = () => {
             setFname('')
             setLname('')
             setAvatar(null)
-            navigate('/')
+            // navigate('/')
         } catch (error) {
             console.error(error)
             
