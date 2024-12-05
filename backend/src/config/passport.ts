@@ -51,7 +51,8 @@ passport.use(
       const userEmail = await User.findOne({  $or: [
         { email: newUser.email },
         { googleId: newUser.googleId },  // Only check googleId if it's set
-    ]})
+      ]})
+      
       if(userEmail )
       {
         done(null, userEmail)
