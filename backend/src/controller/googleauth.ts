@@ -6,7 +6,7 @@ googleRouter.get('/google', passport.authenticate('google', {scope: ['email','pr
 
 googleRouter.get('/google/callback', passport.authenticate('google', {failureRedirect: '/login'}),
     (req: Request, res: Response) => {
-        res.redirect('/dashboard');
+        res.redirect('/');
     });
     
 export default googleRouter;

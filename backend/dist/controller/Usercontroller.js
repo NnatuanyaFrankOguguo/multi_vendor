@@ -137,6 +137,10 @@ userRouter.post('/login-user', catchAsync(async (req, res, next) => {
         if (!logUser) {
             return next(createvalidateError("User not found"));
         }
+        // If the user exists but has a Google account
+        if (logUser.googleId) {
+            return next(createvalidateError("This account is linked to Google. Please log in with Google."));
+        }
         // Check if the password is correct using the comparePassword method
         const isMatch = await logUser.comparePassword(password);
         if (!isMatch) {

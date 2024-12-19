@@ -9,6 +9,7 @@ import { createvalidateError } from '../utils/ErrorHandler.js';
 import User from '../models/Users.js';
 import sendMail from '../utils/sendMail.js';
 import { createActivationToken } from '../controller/Usercontroller.js';
+import sendToken from '../utils/jwtToken.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
@@ -53,9 +54,15 @@ passport.use(
         { googleId: newUser.googleId },  // Only check googleId if it's set
       ]})
       
-      if(userEmail )
+      if(userEmail)
       {
-        done(null, userEmail)
+        if (req.res) {
+          sendToken(userEmail, 200, req.res); // Now res is reliably available
+        } else {
+            console.error("Response object is not available.");
+            return done(new Error("Response object is not available."));
+        }
+        return done(null, userEmail);
       }else{
         //to create token for our user
         const activationToken = createActivationToken(newUser)
@@ -78,8 +85,9 @@ passport.use(
             success: true,
             message: `Check your email:- ${newUser.email} User for activation link.`,
             data: sendingEmail, // You can also send the activation link in the response data for immediate use
-          }) 
+          })
           
+          return done(null, false); // Return false to indicate activation is pending
         } catch (error) {
           return done(error);
         }

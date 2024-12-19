@@ -164,27 +164,32 @@ userRouter.post('/verify-email', catchAsync(async(req : Request, res : Response,
 // USERS LOGIN
 userRouter.post('/login-user', catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     try {
-         const { email, password } = req.body;
+        const { email, password } = req.body;
+
+        // Check if the user exists
+        const logUser = await User.findOne({ email }).select('+password'); // Include the password in the query result
+
+        if (!logUser) {
+            return next(createvalidateError("User not found"));
+        }
+
+        // If the user exists but has a Google account
+        if (logUser.googleId) {
+            return next(createvalidateError("This account is linked to Google. Please log in with Google."));
+        }
  
-         // Check if the user exists
-         const logUser = await User.findOne({ email }).select('+password'); // Include the password in the query result
- 
-         if (!logUser) {
-             return next(createvalidateError("User not found"));
-         }
- 
-         // Check if the password is correct using the comparePassword method
-         const isMatch = await logUser.comparePassword(password); 
-         if (!isMatch) {
-             return next(createvalidateError("Invalid credentials"));
-         }
+        // Check if the password is correct using the comparePassword method
+        const isMatch = await logUser.comparePassword(password); 
+        if (!isMatch) {
+            return next(createvalidateError("Invalid credentials"));
+        }
  
          // Generate token for the user and send it to the frontend
-         sendToken(logUser, 201, res);
+        sendToken(logUser, 201, res);
     } catch (error) {
-         return next(createDataBaseError("An error occurred while logging in"));
+        return next(createDataBaseError("An error occurred while logging in"));
     }
- }));
+}));
 
 
 export default userRouter;
