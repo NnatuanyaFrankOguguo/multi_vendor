@@ -1,7 +1,6 @@
 import User from "../models/Users.js";
 import express from "express";
 import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
-import bcrypt from 'bcrypt';
 import path from "path";
 import { upload } from "../multer.js";
 import fs from 'fs';
@@ -18,6 +17,7 @@ const deleteFile = (filepath) => {
         }
     });
 };
+// USERS SIGN UP
 userRouter.post('/create-user', upload.single("file"), async (req, res, next) => {
     try {
         const { fname, lname, email, password } = req.body;
@@ -107,13 +107,16 @@ userRouter.post('/verify-email', catchAsync(async (req, res, next) => {
             return next(createvalidateError("User already exists"));
         }
         // Hash the password before saving to the database
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        // Check if the password is already hashed
+        //  const isPasswordHashed = password?.startsWith('$2b$');
+        //  const finalPassword = isPasswordHashed
+        //      ? password // Use the hashed password as-is
+        //      : await bcrypt.hash(password as string, 10); // Hash if not already hashed
         const newUser = await User.create({
             fname,
             lname,
             email,
-            password: hashedPassword,
+            password,
             avatar,
             googleId
         });
@@ -123,6 +126,27 @@ userRouter.post('/verify-email', catchAsync(async (req, res, next) => {
     catch (error) {
         console.log(error);
         return next(createDataBaseError("An error occurred while verifying the email"));
+    }
+}));
+// USERS LOGIN
+userRouter.post('/login-user', catchAsync(async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        // Check if the user exists
+        const logUser = await User.findOne({ email }).select('+password'); // Include the password in the query result
+        if (!logUser) {
+            return next(createvalidateError("User not found"));
+        }
+        // Check if the password is correct using the comparePassword method
+        const isMatch = await logUser.comparePassword(password);
+        if (!isMatch) {
+            return next(createvalidateError("Invalid credentials"));
+        }
+        // Generate token for the user and send it to the frontend
+        sendToken(logUser, 201, res);
+    }
+    catch (error) {
+        return next(createDataBaseError("An error occurred while logging in"));
     }
 }));
 export default userRouter;

@@ -24,6 +24,10 @@ interface IUser extends Document {
     isVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
+
+    // Add the methods
+    comparePassword(candidatePassword: string): Promise<boolean>;
+    getJwtToken(): string;
     
   }
   

@@ -3,12 +3,39 @@ import google from './google.png'
 import { Link } from 'react-router-dom'
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai'
 import styles from '../../styles/styles'
-
+import axios from 'axios'
+import server from '../../server'
+import { toast } from'react-toastify';
+import { useNavigate } from 'react-router-dom'
 const Login = () => {
 
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
+    const navigate = useNavigate()
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
     const [visibility, setVisibility] = useState()
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        // Implement login logic here
+        try {
+            const response = await axios.post(`${server}/api/users/login-user`, {email, password})//with credentials the cookies can be sent to the frontend from the backend
+            toast.success("Login Success!")
+            console.log(response)
+            localStorage.setItem('token', response.data.token)
+            navigate('/')
+        } catch (error) {
+            toast.error(error.response.data.message)
+            
+        }
+    }
+
+
+    const googleAuth = () => {
+        // Implement Google OAuth authentication here
+        window.location.href = 'http://localhost:5000/auth/google'
+        // console.log('Google OAuth authentication clicked')
+    }
 
   return (
     <div className='min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
@@ -19,9 +46,9 @@ const Login = () => {
 
             <div className='mt-8 sm:mx-auto sm:w-full sm:max-v-md'>
                 <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-                    <form className='space-y-6'>
+                    <form className='space-y-6' onSubmit={handleSubmit}>
                         <div className='flex justify-center items-center gap-3  rounded-lg border-2 hover:border-green-500  hover:rounded-full cursor-pointer '>
-                            <button className='flex items-center gap-2 py-2'><img src={google} height={25} width={25} alt="google" />Google</button>
+                            <button className='flex items-center gap-2 py-2'  onClick={googleAuth}><img src={google} height={25} width={25} alt="google" />Google</button>
                         </div>
 
                         <div className='flex items-center justify-center'>
