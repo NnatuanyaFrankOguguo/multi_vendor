@@ -48,15 +48,21 @@ done // Callback function
         const activationToken = createActivationToken(newUser);
         //activationURL for verification of email
         const activationURL = `http://localhost:5173/verify-email/${activationToken}`;
+        const emailBody = `
+        <p>Hello ${newUser.fname},</p>
+        <p>Please click on the following link to activate your account:</p>
+        <a href="${activationURL}" style="color: #1a73e8; text-decoration: none; font-weight: bold;">→ Click Here ←</a>
+        <p>Thank you!</p>
+        `;
         try {
             const sendingEmail = await sendMail({
                 email: newUser.email,
                 subject: "Activate your account",
-                text: `Hello ${newUser.fname}, \nPlease click on the following link to activate your account: ${activationURL}`,
+                html: emailBody,
             });
             req.res?.status(200).json({
                 success: true,
-                message: `User created successfully. Check your email:- ${newUser.email} for activation link.`,
+                message: `Check your email:- ${newUser.email} User for activation link.`,
                 data: sendingEmail, // You can also send the activation link in the response data for immediate use
             });
         }

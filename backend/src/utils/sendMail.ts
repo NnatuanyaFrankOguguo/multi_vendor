@@ -5,7 +5,7 @@ import nodemailer, { Transporter } from 'nodemailer';
 interface mailOptions {
     email: string;
     subject: string;
-    text: string;
+    html: string;
 }
 
 
@@ -27,7 +27,7 @@ const sendMail = async (options : mailOptions) : Promise<void> => {
         from: process.env.EMAIL_FROM,
         to: options.email,
         subject: options.subject,
-        text: options.text,
+        html: options.html,
     }
 
     try {

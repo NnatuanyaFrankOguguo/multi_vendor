@@ -50,8 +50,9 @@ app.get('/', (req : Request, res : Response) => {
 })
 
 //Error handling middleware
-app.use(notFoundMiddleware);
 app.use(errorMiddleware);
+app.use(notFoundMiddleware);
+
 
 app.listen(port, () => {
     console.log(`Server is listening on port http://localhost:${port}` )

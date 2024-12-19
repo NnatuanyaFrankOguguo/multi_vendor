@@ -21,13 +21,14 @@
 
 class ErrorHandler extends Error {
     public statusCode: number;
-    public message!: string;
     public isOperational: boolean;
   
     constructor(statusCode: number, message: string, isOperational = true) {
-      super(message);
+      super(message); // This ensures the `message` property of `Error` is set
       this.statusCode = statusCode;
       this.isOperational = isOperational;
+
+      // Make sure the stack trace is captured
       Error.captureStackTrace(this, this.constructor);
     }
 

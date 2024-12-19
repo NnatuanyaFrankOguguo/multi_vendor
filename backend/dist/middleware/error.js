@@ -5,7 +5,7 @@ export const errorMiddleware = (err, req, res, next) => {
     const message = err.message || "Something went wrong!";
     //Logging the error (optional)
     console.error(`Error: ${message}, Stack Trace: ${err.stack}, status code: ${statusCode}`);
-    //Sending response
+    //Sending response to the frontend
     res.status(statusCode).json({
         status: "error",
         statusCode,

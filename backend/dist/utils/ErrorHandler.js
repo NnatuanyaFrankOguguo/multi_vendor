@@ -15,12 +15,12 @@
 // export default ErrorHandler;
 class ErrorHandler extends Error {
     statusCode;
-    message;
     isOperational;
     constructor(statusCode, message, isOperational = true) {
-        super(message);
+        super(message); // This ensures the `message` property of `Error` is set
         this.statusCode = statusCode;
         this.isOperational = isOperational;
+        // Make sure the stack trace is captured
         Error.captureStackTrace(this, this.constructor);
     }
 }

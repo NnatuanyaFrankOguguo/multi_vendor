@@ -36,8 +36,8 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Backend Server, Happy Coding');
 });
 //Error handling middleware
-app.use(notFoundMiddleware);
 app.use(errorMiddleware);
+app.use(notFoundMiddleware);
 app.listen(port, () => {
     console.log(`Server is listening on port http://localhost:${port}`);
 });

@@ -5,6 +5,7 @@ import {AiOutlineEye, AiOutlineEyeInvisible, AiOutlineUser} from 'react-icons/ai
 import styles from '../../styles/styles'
 import { useNavigate } from 'react-router-dom'
 import server from '../../server.js'
+import { toast } from 'react-toastify';
 import axios from 'axios'
 
 const Signup = () => {
@@ -38,8 +39,9 @@ const Signup = () => {
         try {
             // const config = {headers: {'Content-Type': 'multipart/form-data'}}
             const response = await axios.post(`${server}/api/users/create-user`, formData, config);
-            alert(response.data.message) //do sweetalert
+            //alert(response.data.message) //do sweetalert
             console.log(response.data.message);
+            toast.success(response.data.message)
             //PUT A LOADER ICON
             // Clear the form
             setEmail('')
@@ -49,7 +51,8 @@ const Signup = () => {
             setAvatar(null)
             // navigate('/')
         } catch (error) {
-            console.error(error)
+            console.error(error.response)
+            toast.error(error.response.data.message)
             
         }
 
