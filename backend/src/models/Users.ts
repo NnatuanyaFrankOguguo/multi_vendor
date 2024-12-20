@@ -5,7 +5,7 @@ import mongoose, {Document, Schema} from "mongoose";
 import 'dotenv/config'
 
 // Define an interface representing a User document in MongoDB
-interface IUser extends Document {
+export interface IUser extends Document {
     fname: string;
     lname: string;
     email: string;

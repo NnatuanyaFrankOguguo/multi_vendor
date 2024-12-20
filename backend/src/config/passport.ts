@@ -33,7 +33,8 @@ passport.use(
       profile: GoogleProfile, // The profile information from Google
       done: (error: any, user?: any, info?: any) => void // Callback function
     ) => {
-      // Your logic here, e.g., create or update the user in the database
+     try {
+         // Your logic here, e.g., create or update the user in the database
       // console.log(profile);
       const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate a random password
       const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the password
@@ -56,13 +57,20 @@ passport.use(
       
       if(userEmail)
       {
-        if (req.res) {
-          sendToken(userEmail, 200, req.res); // Now res is reliably available
-        } else {
+        // Check if the user has a googleId
+        if (userEmail.googleId) {
+          if (req.res) {
+            sendToken(userEmail, 200, req.res);
+            req.res.redirect('http://localhost:5173/');
+          } else {
             console.error("Response object is not available.");
             return done(new Error("Response object is not available."));
+          }
+        } else {
+            // If the user is registered with email/password but trying to log in with Google, call done with an error
+            return done(null, false, { message: 'This account was registered using email/password. Please log in with email.' });
         }
-        return done(null, userEmail);
+
       }else{
         //to create token for our user
         const activationToken = createActivationToken(newUser)
@@ -88,7 +96,7 @@ passport.use(
           })
           
           return done(null, false); // Return false to indicate activation is pending
-        } catch (error) {
+      } catch (error) {
           return done(error);
         }
         // If not, create a new user
@@ -96,6 +104,10 @@ passport.use(
         // done(null, createUser); // Proceed with the user profile (for session management)
       }
       
+      
+     } catch (error) {
+      return done(error); // Handle any unexpected errors
+     }
       
     }
   )
