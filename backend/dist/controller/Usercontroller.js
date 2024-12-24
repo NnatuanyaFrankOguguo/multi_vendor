@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import { catchAsync } from "../middleware/catchAsync.js";
 import sendToken from "../utils/jwtToken.js";
+import isAuthenticated from "../middleware/auth.js";
 const userRouter = express.Router();
 const deleteFile = (filepath, next) => {
     fs.unlink(filepath, (err) => {
@@ -151,6 +152,25 @@ userRouter.post('/login-user', catchAsync(async (req, res, next) => {
     }
     catch (error) {
         return next(createDataBaseError("An error occurred while logging in"));
+    }
+}));
+// load User
+userRouter.get('/getuser', isAuthenticated, catchAsync(async (req, res, next) => {
+    if (!req.user) {
+        return next(createDataBaseError("User not authenticated"));
+    }
+    try {
+        const user = await User.findById(req.user._id.toString()); //req.user.id user from the login cookies in the fronted // Ensure req.user is properly typed
+        if (!user) {
+            return next(createDataBaseError("User not found"));
+        }
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    }
+    catch (error) {
+        return next(createDataBaseError("An error occurred while fetching user data"));
     }
 }));
 export default userRouter;

@@ -1,4 +1,4 @@
-import User from "../models/Users.js";
+import User, {IUser} from "../models/Users.js";
 import express, { Request, Response, NextFunction } from "express";
 import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
 import bcrypt from 'bcrypt';
@@ -9,6 +9,7 @@ import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import { catchAsync } from "../middleware/catchAsync.js";
 import sendToken from "../utils/jwtToken.js";
+import isAuthenticated from "../middleware/auth.js";
 
 
 const userRouter = express.Router();
@@ -190,6 +191,28 @@ userRouter.post('/login-user', catchAsync(async (req: Request, res: Response, ne
         return next(createDataBaseError("An error occurred while logging in"));
     }
 }));
+
+// load User
+userRouter.get('/getuser', isAuthenticated, catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+        return next(createDataBaseError("User not authenticated"));
+    }
+    
+    try {
+        const user = await User.findById((req.user as IUser)._id.toString());//req.user.id user from the login cookies in the fronted // Ensure req.user is properly typed
+        if (!user) {
+            return next(createDataBaseError("User not found"));
+        }
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while fetching user data"));
+    }
+})
+)
+
 
 
 export default userRouter;

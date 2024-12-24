@@ -19,9 +19,9 @@ const Login = () => {
         e.preventDefault()
         // Implement login logic here
         try {
-            const response = await axios.post(`${server}/api/users/login-user`, {email, password})//with credentials the cookies can be sent to the frontend from the backend
+            const response = await axios.post(`${server}/api/users/login-user`, {email, password}, {withCredentials: true})//with credentials the cookies can be sent to the frontend from the backend
             toast.success("Login Success!")
-            console.log(response)
+            //console.log(response)
             localStorage.setItem('token', response.data.token)
             navigate('/')
         } catch (error) {

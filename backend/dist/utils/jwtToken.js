@@ -2,6 +2,20 @@ const sendToken = (user, statusCode, res) => {
     try {
         const token = user.getJwtToken();
         const expiration = parseInt(process.env.JWT_COOKIE_EXPIRATION, 10) || 7;
+        // Create a safe user object to send to the frontend
+        const userToSend = {
+            _id: user._id,
+            fname: user.fname,
+            lname: user.lname,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+            isVerified: user.isVerified,
+            address: user.address,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            googleId: user.googleId, // Optional, if used
+        };
         // Set token as a cookie on the client siden
         const options = {
             expires: new Date(Date.now() + expiration * 24 * 60 * 60 * 1000),
@@ -11,7 +25,7 @@ const sendToken = (user, statusCode, res) => {
         };
         res.status(statusCode).cookie("token", token, options).json({
             success: true,
-            user,
+            user: userToSend,
             token,
         });
     }

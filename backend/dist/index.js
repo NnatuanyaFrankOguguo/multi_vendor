@@ -16,7 +16,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', //allow connections from this origin
+    credentials: true //allow cookies to be sent over http or https
+    // allowedHeaders: ['Content-Type', 'Authorization']  //allow these headers to be sent with the request
+}));
 // Sessions
 app.use(session({
     secret: process.env.SESSION_SECRET,

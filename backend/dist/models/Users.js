@@ -4,31 +4,31 @@ import mongoose from "mongoose";
 import 'dotenv/config';
 const userSchema = new mongoose.Schema({
     fname: {
-        type: 'string',
+        type: String,
         required: [true, 'First name is required'],
         minlength: 2,
         maxlength: 20
     },
     lname: {
-        type: 'string',
+        type: String,
         required: [true, 'Last name is required'],
         minlength: 2,
         maxlength: 20
     },
     email: {
-        type: 'string',
+        type: String,
         required: [true, 'Email is required'],
         unique: true,
         match: [/\S+@\S+\.\S+/, 'Please enter a valid email']
     },
     googleId: {
-        type: 'string',
+        type: String,
         sparse: true,
         unique: true,
         required: false,
     },
     password: {
-        type: 'string',
+        type: String,
         required: [true, 'Password is required'],
         minlength: 8,
         select: false // Do not return password in response
@@ -42,23 +42,23 @@ const userSchema = new mongoose.Schema({
     address: [
         {
             address1: {
-                type: 'string',
+                type: String,
                 required: false,
             },
             city: {
-                type: 'string',
+                type: String,
                 required: false,
             },
             state: {
-                type: 'string',
+                type: String,
                 required: false,
             },
             country: {
-                type: 'string',
+                type: String,
                 required: false,
             },
             zipCode: {
-                type: 'Number',
+                type: Number,
                 required: false,
             }
         }
