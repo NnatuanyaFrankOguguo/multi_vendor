@@ -9,11 +9,11 @@ import sendMail from "../utils/sendMail.js";
 import { catchAsync } from "../middleware/catchAsync.js";
 import sendToken from "../utils/jwtToken.js";
 const userRouter = express.Router();
-const deleteFile = (filepath) => {
+const deleteFile = (filepath, next) => {
     fs.unlink(filepath, (err) => {
         if (err) {
             console.error("file deletion error:", err);
-            // return next(createDataBaseError("Error deleting file"));
+            return next(createDataBaseError("Error deleting file"));
         }
     });
 };
@@ -27,7 +27,7 @@ userRouter.post('/create-user', upload.single("file"), async (req, res, next) =>
             if (req.file) {
                 const filename = req.file?.filename;
                 const filepath = `uploads/${filename}`;
-                deleteFile(filepath); //Clean up uploaded file if user exists
+                deleteFile(filepath, next); //Clean up uploaded file if user exists
             }
             //DO RES.STATUS. (SEND USER ALREADY EXIST TO THE FRONTEND AND USE POP UP TO DISPLAY IT FOR THEM)
             return next(createvalidateError("User already exists"));
@@ -138,9 +138,9 @@ userRouter.post('/login-user', catchAsync(async (req, res, next) => {
             return next(createvalidateError("User not found"));
         }
         // If the user exists but has a Google account
-        if (logUser.googleId) {
-            return next(createvalidateError("This account is linked to Google. Please log in with Google."));
-        }
+        // if (logUser.googleId) {
+        //     return next(createvalidateError("This account is linked to Google. Please log in with Google."));
+        // }
         // Check if the password is correct using the comparePassword method
         const isMatch = await logUser.comparePassword(password);
         if (!isMatch) {
