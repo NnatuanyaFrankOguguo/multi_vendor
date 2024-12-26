@@ -56,11 +56,9 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
         type: String,
         sparse: true,
         unique: true,
-        required: false,
     },
     password: {
         type: String,
-        required: [true, 'Password is required'],
         minlength: 8,
         select: false  // Do not return password in response
     },
