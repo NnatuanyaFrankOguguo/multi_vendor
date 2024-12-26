@@ -1,10 +1,8 @@
 import React, {useEffect} from 'react'
 import {Routes, Route} from 'react-router-dom'
-import { toast, ToastContainer} from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios'
-import {LoginPage, SignupPage, VerifyemailPage} from './Routes.jsx'
-import server from './server.js';
+import {LoginPage, SignupPage, VerifyemailPage, Homepage} from './Routes.jsx'
 import Store from './redux/store.js';
 import { loadUser } from './redux/actions/user.js';
 
@@ -19,6 +17,7 @@ const App = () => {
     <div>
       <ToastContainer autoClose={5000} hideProgressBar={true}  />
       <Routes>
+        <Route path="/" element={<Homepage />}> </Route>
         <Route path="/login" element={<LoginPage />}> </Route>
         <Route path="/sign-up" element={<SignupPage />}> </Route>
         <Route path="/verify-email/:activation_token" element={<VerifyemailPage />}> </Route>
