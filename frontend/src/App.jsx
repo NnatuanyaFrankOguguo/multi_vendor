@@ -5,21 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 import {LoginPage, SignupPage, VerifyemailPage} from './Routes.jsx'
 import server from './server.js';
+import Store from './redux/store.js';
+import { loadUser } from './redux/actions/user.js';
 
 const App = () => {
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-      const response = await axios.get(`${server}/api/users/getuser`, {withCredentials: true})
-      console.log(response)
-      toast.success(response.data.message)
-      } catch (error) {
-        console.log(error)
-        toast.error(error.response.data.message)
-      }
-      fetchUser()
-    }
+    Store.dispatch(loadUser());
     
   }, []);
 
