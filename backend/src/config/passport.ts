@@ -52,7 +52,7 @@ passport.use(
           // Your logic here, e.g., create or update the user in the database
           // console.log(profile);
 
-          const newUser = await User.create({
+           user = await User.create({
             googleId: profile.id,
             fname: profile.name?.givenName || '',          // Use optional chaining
             lname: profile.name?.familyName || '',         // Provide fallback values
@@ -62,7 +62,7 @@ passport.use(
           
           });
 
-          console.log("New user data:", newUser);
+          console.log("New user data:", user);
 
         } 
       }

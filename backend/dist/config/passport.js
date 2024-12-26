@@ -39,7 +39,7 @@ done // Callback function
                 // Create a new user if no user exists with the same email
                 // Your logic here, e.g., create or update the user in the database
                 // console.log(profile);
-                const newUser = await User.create({
+                user = await User.create({
                     googleId: profile.id,
                     fname: profile.name?.givenName || '', // Use optional chaining
                     lname: profile.name?.familyName || '', // Provide fallback values
@@ -47,7 +47,7 @@ done // Callback function
                     avatar: profile.photos?.[0]?.value || 'default-avatar-url', // Provide a default if needed
                     // Set a default value if `public_id` is required but not provided
                 });
-                console.log("New user data:", newUser);
+                console.log("New user data:", user);
             }
         }
         if (!user) {
