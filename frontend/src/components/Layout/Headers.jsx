@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import styles from '../../styles/styles'
 import { Link } from 'react-router-dom'
-import leaf from '../../assets/leaf.png'
-import {categoriesData, productData} from '../../static/data'
-import { AiOutlineSearch } from 'react-icons/ai'
+import leaf from '../../assets/leaf.webp'
+import { categoriesData, productData} from '../../static/data'
+import { AiOutlineHeart, AiOutlineSearch } from 'react-icons/ai'
 import { IoIosArrowForward, IoIosArrowDown } from 'react-icons/io'
 import { BiMenuAltLeft } from 'react-icons/bi'
-import DropDown from './DropDown.jsx'
+import { CgProfile } from 'react-icons/cg'
+import DropDown from './DropDown'
+import Navbar from './Navbar'
+import cart from './shopping_cart.webp'
 
-const Header = () => {
+const Header = ({activeHeading}) => { //receiving the activeHeading from the HomePage component and send it to the Navbar component
 
     const [searchTerm, setSearchTerm] = useState('')
     const [searchData, setSearchData] = useState(null)
@@ -24,7 +27,7 @@ const Header = () => {
         )
         setSearchData(filteredProducts);
     }
-
+    // the logic for the active is when the homepage is being scroll to some certian height it will remain sticky at the top
     const [active, setActive] = useState(false)
 
     window.addEventListener('scroll', () => {
@@ -35,7 +38,7 @@ const Header = () => {
         }
     })
 
-    const [dropDown, setDropdown] = useState(false)
+    const [dropDown, setDropDown] = useState(false)
 
 
   return (
@@ -44,7 +47,7 @@ const Header = () => {
             <div className='hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between'>
                 <div className='flex items-center space-x-2'>
                     <Link to='/' className="flex items-center space-x-1">
-                        <img src={leaf} alt='logo' className='h-10 w-10/12' />
+                        <img src={leaf} alt='logo' className='h-10 w-10/12' loading='lazy'/>
                         <p className="text-base text-blue-900 font-semibold">FrankFort</p>
                     </Link>
                 </div>
@@ -81,15 +84,15 @@ const Header = () => {
 
                 <div className={`${styles.button}`}>
                     <Link to='/farmer'>
-                        <h1 className='text-[#fff] flex items-center mb-1'> Farmer <IoIosArrowForward className="ml-1 mt-1"  /></h1>
+                        <h1 className='text-[#fff] flex items-center mb-1'> Seller Login <IoIosArrowForward className="ml-1 mt-1"  /></h1>
                     </Link>
                 </div>
             </div>
             
         </div>
 
-        <div className={`${active === true ? 'shadow-sm fixed top-0 left-0 z-10' : null} transition hidden 800px:flex items-center justify-between w-full bg-[#8B4513] h-[65px] rounded-lg`}>
-            <div className={`${styles.section} relative ${styles.normalFlex} justify-between bg[#7b4723]`}>
+        <div className={`${active === true ? 'shadow-sm fixed top-0 left-0 z-10' : null} transition hidden 800px:flex items-center justify-between w-full bg-[#8B4513] h-[65px] rounded-lg `}>
+            <div className={`${styles.section} relative ${styles.normalFlex} justify-between bg[#7b4723] `}>
                 {/* categories */}
                 <div>
                     <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000px:block">
@@ -98,16 +101,50 @@ const Header = () => {
                         <button className='h-[100%] w-full bg-slate-100 flex justify-between items-center pl-10 font-sans text-md font-[500]  select-none rounded-t-md pb-2 '>
                             All Categories
                         </button>
-                        <IoIosArrowDown size={23} className='absolute top-4 right-2 cursor-pointer' onClick={() => setDropdown(!dropDown)} />
-                            {
-                                dropDown ? (
-                                    <DropDown categoriesData= {categoriesData} setDropDown={setDropDown} />
-                                ) : null
-                            }
+                        <IoIosArrowDown size={23} className='absolute top-4 right-2 cursor-pointer' onClick={() => setDropDown(!dropDown)} />
+                        {
+                            // dropdown list for when the icon downarrow is clicked
+                            dropDown ? (
+                                <DropDown categoriesData={categoriesData} setDropDown={setDropDown} />
+                            ) : null
+                        }
+
                     </div>
                 
                 </div>
 
+                {/* now for the navbar */}
+                <div className={`${styles.normalFlex}`}>
+                    <Navbar active={activeHeading} />
+                </div>
+                    
+                {/* for the cart icon, love icons, profile icon */}
+                <div className='flex'>
+                    <div className={`${styles.normalFlex}`}>
+                        <div className='relative cursor-pointer mr-[15px]'>
+                            <AiOutlineHeart size={30} style={{color: 'rgb(255 255 255 / 83%)'}}/>
+                            <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
+                                0
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className={`${styles.normalFlex}`}>
+                        <div className='relative cursor-pointer mr-[15px]'>
+                            <img src={cart} style={{width: "30px"}} loading='lazy'/>
+                            <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
+                                1
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className={`${styles.normalFlex}`}>
+                        <div className='relative cursor-pointer mr-[15px]'>
+                            <Link to='/login'><CgProfile size={30} style={{color: 'rgb(255 255 255 / 83%)'}}/></Link>
+                           
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </>

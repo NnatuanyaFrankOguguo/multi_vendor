@@ -1,8 +1,37 @@
 import React from 'react'
+import {useNavigate } from 'react-router-dom'
+import styles from '../../styles/styles'
 
-const DropDown = ({categories, setDropDown}) => {
+const DropDown = ({ categoriesData, setDropDown }) => {
+
+  const navigate = useNavigate();
+  const submitHandler = (i) => {
+    navigate(`/products?category=${i.title}`);
+    setDropDown(false);
+    window.location.reload();
+
+  }
+
+
+
+
   return (
-    <div>DropDown</div>
+    <div className="pb-4 w-[270px] bg-[#fff] absolute z-30 rounded-b-md shadow-sm">
+      {
+        categoriesData && categoriesData.map((i, index) => (
+          <div key={index} className={`${styles.normalFlex}`} onClick={() => submitHandler(i)}>
+            <img src={i.image_Url} style={{
+              width: '45px',
+              height: '45px',
+              objectFit: 'contain',
+              marginLeft: '10px',
+              userSelect: 'none',
+            }} alt="" />
+            <h3 className='m-3 cursor-pointer select-none text-sm'>{i.title}</h3>
+          </div>
+        ))
+      }
+    </div>
   )
 }
 
