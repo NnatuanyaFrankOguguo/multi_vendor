@@ -94,7 +94,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
         <div className={`${active === true ? 'shadow-sm fixed top-0 left-0 z-10' : null} transition hidden 800px:flex items-center justify-between w-full bg-[#8B4513] h-[65px] rounded-lg `}>
             <div className={`${styles.section} relative ${styles.normalFlex} justify-between bg[#7b4723] `}>
                 {/* categories */}
-                <div>
+                <div onClick={() => setDropDown(!dropDown)}>
                     <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000px:block">
                         <BiMenuAltLeft size={30} className='absolute top-3 left-2 cursor-pointer' />
 
