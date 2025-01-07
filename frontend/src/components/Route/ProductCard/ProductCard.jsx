@@ -16,17 +16,17 @@ const ProductCard = ({data}) => {
 
   return (
     <div className='w-full mx-auto rounded-[15px] shadow-lg relative cursor-pointer '>
-        <div className='flex justify-end'></div>
+        
         <Link to={`/product/${product_name}`}>
             <img src={data.image_Url[0].url} alt="products" className='w-full rounded-t-[15px] rounded-b-[5px] object-contain hover:scale-105 transition-transform duration-300 '/>
         </Link>
         <div className='flex flex-col pl-3'>
           <Link to='/'>
-              <h6 className={`${styles.shop_name}`}>{data.shop.name}</h6>
+              <h6 className={`${styles.shop_name} `}>{data.shop.name}</h6>
           </Link>
 
           <Link to={`product/${product_name}`}>
-              <h4 className='pb-3 font-[500] text-[15px]'>{data.name.length > 40 ? data.name.slice(0,40) + "..." : data.name}</h4>{/*added condition that if the name is greater than 40 characters add ... to the end to avoid long text */}
+              <h4 className=' font-[500] text-[15px] pb-2 mt-[-10px]'>{data.name.length > 40 ? data.name.slice(0,40) + "..." : data.name}</h4>{/*added condition that if the name is greater than 40 characters add ... to the end to avoid long text */}
 
               {/* we will make the star dynamic later */}
               <div className="flex">
