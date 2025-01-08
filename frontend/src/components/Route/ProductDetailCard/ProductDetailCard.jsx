@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { RxCross1 } from 'react-icons/rx';
 import styles from '../../../styles/styles';
 import { AiOutlineMessage } from 'react-icons/ai';
-import { AiFillStar,AiFillHeart, AiOutlineHeart, AiOutlineStar, AiOutlineEye, AiOutlineShoppingCart } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineHeart, AiOutlineShoppingCart } from 'react-icons/ai';
 
-const ProductDetailCard = ({setOpen, open, data}) => {
+const ProductDetailCard = ({setOpen, data}) => {
     const [count, setCount ] = useState(0)
     const [click, setClick] = useState(false)
-    const [select, setSelect] = useState(false)
+    // const [select, setSelect] = useState(false)
 
     const handleMessgaeSubmit = () => {
 

@@ -3,7 +3,8 @@ import Header from '../components/Layout/Headers.jsx'
 import Hero from '../components/Route/Hero/Hero.jsx'
 import Categories from '../components/Route/Category/Categories.jsx'
 import BestDeals from '../components/Route/BestDeals/BestDeals.jsx'
-
+import FeaturedProducts from '../components/Route/FeaturedProducts/FeaturedProducts.jsx'
+import Events from '../components/Route/Events/Events.jsx'
 const Homepage = () => {
   return (
     <div>
@@ -12,6 +13,8 @@ const Homepage = () => {
         <Hero />
         <Categories />
         <BestDeals />
+        <Events />
+        <FeaturedProducts />
     </div>
   )
 }
