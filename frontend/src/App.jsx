@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import {Routes, Route} from 'react-router-dom'
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {LoginPage, SignupPage, VerifyemailPage, Homepage} from './Routes.jsx'
+import {LoginPage, SignupPage, VerifyemailPage, Homepage, ProductPage} from './Routes.jsx'
 import Store from './redux/store.js';
 import { loadUser } from './redux/actions/user.js';
 
@@ -21,6 +21,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />}> </Route>
         <Route path="/sign-up" element={<SignupPage />}> </Route>
         <Route path="/verify-email/:activation_token" element={<VerifyemailPage />}> </Route>
+        <Route path='/products' element = {<ProductPage />}> </Route>
       </Routes>
     </div>
   );
