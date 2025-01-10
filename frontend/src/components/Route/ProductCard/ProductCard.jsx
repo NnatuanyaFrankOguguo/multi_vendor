@@ -26,15 +26,15 @@ const ProductCard = ({data}) => {
           </Link>
 
           <Link to={`product/${product_name}`}>
-              <h4 className=' font-[500] text-[15px] pb-2 mt-[-10px]'>{data.name.length > 40 ? data.name.slice(0,40) + "..." : data.name}</h4>{/*added condition that if the name is greater than 40 characters add ... to the end to avoid long text */}
+              <h4 className=' font-[500] text-[15px] pb-2 mt-[-10px] mb-[-5px]'>{data.name.length > 40 ? data.name.slice(0,40) + "..." : data.name}</h4>{/*added condition that if the name is greater than 40 characters add ... to the end to avoid long text */}
 
               {/* we will make the star dynamic later */}
-              <div className="flex">
-                <AiFillStar size={20} color='#f6BA00'  className='mr-2 cursor-pointer'/>
-                <AiFillStar size={20} color='#f6BA00' className='mr-2 cursor-pointer'/>
-                <AiFillStar size={20} color='#f6BA00' className='mr-2 cursor-pointer'/>
-                <AiFillStar size={20} color='#f6BA00' className='mr-2 cursor-pointer'/>
-                <AiOutlineStar size={20} color='#f6BA00' className='mr-2 cursor-pointer'/>
+              <div className="flex justify-end mb-[-6px]">
+                <AiFillStar size={13} color='#f6BA00'  className='cursor-pointer '/>
+                <AiFillStar size={13} color='#f6BA00' className='cursor-pointer'/>
+                <AiFillStar size={13} color='#f6BA00' className='cursor-pointer'/>
+                <AiFillStar size={13} color='#f6BA00' className='cursor-pointer'/>
+                <AiOutlineStar size={13} color='#f6BA00' className='mr-2 cursor-pointer '/>
               </div>
 
               <div className="py-2 flex items-center justify-between">
@@ -45,7 +45,7 @@ const ProductCard = ({data}) => {
                         }
                     </h5>
 
-                    <h4 className={`${styles.price}`}>
+                    <h4 className={`${styles.price} `}>
                         {
                           data.price ? "₦" + data.price : null
                         }
