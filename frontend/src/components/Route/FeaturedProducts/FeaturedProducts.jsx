@@ -8,7 +8,7 @@ const FeaturedProducts = () => {
     <div>
         <div className={`${styles.section}`}>
             <div className={`${styles.heading}`}>
-                <h1 className='text-2xl font-bold mt-10'>Featured Products</h1>
+                <h1 className='text-2xl font-bold '>Featured Products</h1>
             </div>
 
             <div className="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] mt-[30px] gap-[24px] row-gap-[50px]">

@@ -22,8 +22,9 @@ const Login = () => {
             const response = await axios.post(`${server}/api/users/login-user`, {email, password}, {withCredentials: true})//with credentials the cookies can be sent to the frontend from the backend
             toast.success("Login Success!")
             //console.log(response)
-            localStorage.setItem('token', response.data.token)
+            // localStorage.setItem('token', response.data.token)
             navigate('/')
+            window.location.reload()
         } catch (error) {
             toast.error(error.response.data.message)
             
@@ -35,6 +36,7 @@ const Login = () => {
         // Implement Google OAuth authentication here
         window.location.href = 'http://localhost:5000/auth/google'
         // console.log('Google OAuth authentication clicked')
+        // window.location.reload()
     }
 
   return (

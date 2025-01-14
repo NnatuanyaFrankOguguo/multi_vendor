@@ -5,16 +5,24 @@ import leaf from '../../assets/leaf.webp'
 import { categoriesData, productData} from '../../static/data'
 import { AiOutlineHeart, AiOutlineSearch } from 'react-icons/ai'
 import { IoIosArrowForward, IoIosArrowDown } from 'react-icons/io'
+import { FiChevronDown } from 'react-icons/fi';
 import { BiMenuAltLeft } from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
 import DropDown from './DropDown'
 import Navbar from './Navbar'
 import cart from './shopping_cart.webp'
+import { useSelector } from 'react-redux'
+import server from '../../server'
 
 const Header = ({activeHeading}) => { //receiving the activeHeading from the HomePage component and send it to the Navbar component
 
     const [searchTerm, setSearchTerm] = useState('')
     const [searchData, setSearchData] = useState(null)
+    //to get the signed in user details that is being stored in the database to display in the frontend
+    //import the isAuthenticated from the redux file
+    const { isAuthenticated, user } = useSelector((state) => state.user)
+    console.log(user)
+    
 
     const handleSearch = (e) => {
         e.preventDefault()
@@ -39,6 +47,17 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
     })
 
     const [dropDown, setDropDown] = useState(false)
+
+    //initial for the user names
+    const initials = (fname, lname) => {
+        const firstLetter = fname.charAt(0).toUpperCase()
+        const secondLetter = lname.charAt(0).toUpperCase()
+        return `${firstLetter}${secondLetter}`
+    }
+
+    
+    
+
 
 
   return (
@@ -113,7 +132,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                 
                 </div>
 
-                {/* now for the navbar */}
+                {/* NOW FOR THE NAVBAR*/}
                 <div className={`${styles.normalFlex}`}>
                     <Navbar active={activeHeading} />
                 </div>
@@ -140,7 +159,18 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
 
                     <div className={`${styles.normalFlex}`}>
                         <div className='relative cursor-pointer mr-[15px]'>
-                            <Link to='/login'><CgProfile size={30} style={{color: 'rgb(255 255 255 / 83%)'}}/></Link>
+                            {
+                                isAuthenticated ? (
+                                    <Link to={`/profile/${user._id}`} className='flex items-center gap-1  justify-center '>
+                                        <img src={user.googleId ? user.avatar : `${server}/images/` + user.avatar } className="w-[40px] h-[40px] rounded-full"  alt="" /> 
+                                        <span className='font-bold'> {user ? (initials(user.fname,user.lname)) : ""} <FiChevronDown size={20} className='text-gray-900' /></span>
+                                    </Link> 
+
+                                ) : (
+                                    <Link to='/login'><CgProfile size={30} style={{color: 'rgb(255 255 255 / 83%)'}}/></Link>
+                                )
+                            }
+                            
                            
                         </div>
                     </div>

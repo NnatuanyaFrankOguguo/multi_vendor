@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import server from '../../server';
 
 const Verifyemail = () => {
     // Component to verify email after signup
+    const navigate = useNavigate()
     const {activation_token} = useParams();
     const[error, setError] = useState();
 
@@ -16,7 +18,11 @@ const Verifyemail = () => {
                 try {
                     const response = await axios.post(`${server}/api/users/verify-email`, {activation_token})
                     console.log(response.data.message);
+                    window.location.reload() // to reload the page after successful login
                     // navigate to the login page after successful verification
+                    navigate('/login')
+                    window.location.reload() // to reload the page after successful login
+                    
                 } catch (error) {
                     console.log(error.response.data.message);
                     setError(true);
