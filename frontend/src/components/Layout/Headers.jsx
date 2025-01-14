@@ -13,6 +13,8 @@ import Navbar from './Navbar'
 import cart from './shopping_cart.webp'
 import { useSelector } from 'react-redux'
 import server from '../../server'
+import Cart from '../Cart/Cart.jsx'
+import Wishlist from '../wishlist/Wishlist.jsx'
 
 const Header = ({activeHeading}) => { //receiving the activeHeading from the HomePage component and send it to the Navbar component
 
@@ -54,6 +56,12 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
         const secondLetter = lname.charAt(0).toUpperCase()
         return `${firstLetter}${secondLetter}`
     }
+    // FOR THE CART FUNCTIONALITY
+    const [openCart, setOpenCart] = useState(false)
+
+    // FOR THE WISHLIST FUNCTIONALITY
+    const [openWishlist, setOpenWishlist] = useState(false)
+
 
     
     
@@ -140,7 +148,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                 {/* for the cart icon, love icons, profile icon */}
                 <div className='flex'>
                     <div className={`${styles.normalFlex}`}>
-                        <div className='relative cursor-pointer mr-[15px]'>
+                        <div className='relative cursor-pointer mr-[15px]' onClick={() => setOpenWishlist(true)}>
                             <AiOutlineHeart size={30} style={{color: 'rgb(255 255 255 / 83%)'}}/>
                             <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
                                 0
@@ -149,7 +157,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                     </div>
 
                     <div className={`${styles.normalFlex}`}>
-                        <div className='relative cursor-pointer mr-[15px]'>
+                        <div className='relative cursor-pointer mr-[15px]' onClick={() => setOpenCart(true)}>
                             <img src={cart} style={{width: "30px"}} loading='lazy'/>
                             <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
                                 1
@@ -171,9 +179,22 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                                 )
                             }
                             
-                           
                         </div>
                     </div>
+
+                    {/* CART POPUP */}
+                    {
+                        openCart ? (
+                            <Cart setOpenCart={setOpenCart} />
+                        ) : null
+                    }
+
+                    {/* WISHLIST POPUP */}
+                    {
+                        openWishlist ? (
+                            <Wishlist setOpenWishlist={setOpenWishlist} />
+                        ) : null
+                    }
                 </div>
             </div>
         </div>

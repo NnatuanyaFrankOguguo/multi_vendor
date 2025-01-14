@@ -24,7 +24,7 @@ const Login = () => {
             //console.log(response)
             // localStorage.setItem('token', response.data.token)
             navigate('/')
-            window.location.reload()
+            window.location.reload(true)
         } catch (error) {
             toast.error(error.response.data.message)
             
