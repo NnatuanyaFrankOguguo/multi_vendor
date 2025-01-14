@@ -21,7 +21,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
     //to get the signed in user details that is being stored in the database to display in the frontend
     //import the isAuthenticated from the redux file
     const { isAuthenticated, user } = useSelector((state) => state.user)
-    console.log(user)
+    // console.log(user)
     
 
     const handleSearch = (e) => {
