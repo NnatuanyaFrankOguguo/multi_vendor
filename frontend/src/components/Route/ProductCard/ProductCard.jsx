@@ -9,7 +9,7 @@ const ProductCard = ({data}) => {
     const [open, setOpen] = useState(false);
 
     const item = data.name
-    const product_name = item.replace(/\s+/g, "-"); // removing the spaces from the product name and replacing it with -...so it can as part of the parameter
+    const product_name = item.replace(/\s+/g, "-"); // removing the spaces from the product name and replacing it with -...so it can as part of the parameter directing to the productDetailsPage
 
 
 

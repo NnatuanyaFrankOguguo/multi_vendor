@@ -7,12 +7,14 @@ const SignupPage = () => {
 
   const { loading, isAuthenticated } = useSelector((state) => state.user)
 
+  const navigate = useNavigate()
+
   useEffect(() => {
-    // Check if the token exists in the cookies (or wherever it's stored)
     if(isAuthenticated === true) {
-      // If the user is authenticated, load their user data
-      Store.dispatch(loadUser());
+      // Redirect to home page if user is already authenticated
+      navigate("/")
     }
+
     
   }, []);
 

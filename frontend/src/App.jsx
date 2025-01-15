@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import {Routes, Route} from 'react-router-dom'
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,13 +22,13 @@ const App = () => {
     Store.dispatch(loadUser());
     
     
-  }, [isAuthenticated]);
+  }, []);
 
   return (
     <>
       {
         loading ?  null : (
-          <div>
+          <BrowserRouter>
             <ToastContainer autoClose={5000} hideProgressBar={true}  />
             <Routes>
               <Route path="/" element={<Homepage />}> </Route>
@@ -35,7 +36,7 @@ const App = () => {
               <Route path="/sign-up" element={<SignupPage />}> </Route>
               <Route path="/verify-email/:activation_token" element={<VerifyemailPage />}> </Route>
               <Route path='/products' element = {<ProductPage />}> </Route>
-              <Route path='/product/:id' element = {<ProductDetailsPage />}> </Route>
+              <Route path='/product/:name' element = {<ProductDetailsPage />}> </Route>
 
               <Route path='/best-selling' element = {<BestSellingPage />}> </Route>
               <Route path='/events' element = {<EventsPage />}> </Route>
@@ -43,7 +44,7 @@ const App = () => {
               
               
             </Routes>
-          </div>
+          </BrowserRouter>
         )
       }
     </>
