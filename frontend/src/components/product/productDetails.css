@@ -1,0 +1,19 @@
+/* Zoom Window Styling */
+.relative {
+    position: relative;
+  }
+  
+  .absolute {
+    position: absolute;
+  }
+  
+  .zoom-window {
+    width: 200px; /* Size of the zoom window */
+    height: 200px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: 200% 200%; /* Set zoom level */
+    z-index: 1000;
+  }
+  
