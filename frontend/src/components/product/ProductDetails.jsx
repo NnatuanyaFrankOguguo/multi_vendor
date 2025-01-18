@@ -65,9 +65,9 @@ const ProductDetails = ({ data }) => {
         <div className="w-full max-w-6xl mx-auto px-4 py-8">
             <div className="flex flex-col md:flex-row gap-8">
               {/* Left side: Images */}
-                <div className="w-full md:w-1/2 flex gap-4">
+                <div className="w-full md:w-1/2 flex flex-col md:flex-row gap-4">
                     {/* Thumbnail Images */}
-                    <div className="flex flex-col gap-3">
+                    <div className="flex gap-3 order-1 md:order-1 md:flex-col md:items-center">
                         {data.image_Url.map((img, index) => (
                             <div key={index} className={`w-20 h-20 cursor-pointer border-2 transition-all duration-200 hover:border-blue-400 
                                 ${select === index ? "border-blue-500" : "border-transparent"}`} 
@@ -82,8 +82,8 @@ const ProductDetails = ({ data }) => {
                     </div>
     
                     {/* Main Image Container */}
-                    <div className="relative flex-1" onMouseEnter={() => setShowZoom(true)} onMouseLeave={() => setShowZoom(false)}
-                    onMouseMove={handleMouseMove} onWheel={handleWheel} >
+                    <div className="relative flex-1 order-2 md:order-1" onMouseEnter={() => setShowZoom(true)} onMouseLeave={() => setShowZoom(false)}
+                    onMouseMove={handleMouseMove} onWheel={handleWheel} style={{maxHeight: "500px"}} >
                         {/* Darkened Overlay */}
                         {showZoom && (
                             <div className="absolute inset-0 bg-black bg-opacity-50"
@@ -97,6 +97,8 @@ const ProductDetails = ({ data }) => {
                         )}
         
                         <img ref={imageRef} src={data.image_Url[select].url}nalt="Selected product" className="w-full h-full object-cover"/>
+
+                        <p className="font-Roboto font-bold text-[#D3D3D3] text-[18px] text-center  mt-5 flex items-center justify-center ">Featured By FrankFort.com</p>
                     </div>
                 </div>
     
@@ -172,15 +174,15 @@ const ProductDetails = ({ data }) => {
 
                         
                     </div>
-                            {/* REMOVE THIS PARTICULA DIV OR SET IT WELL THAT THE IMAGE DOES NOT EXPAND AS THE DIV EXPANDS AND ALSO TELL CHATGPT TO MAKE THE ZOOM WINDOW RESPONSIVE AND THE TWO SMALLER IMAGES TOO RESPONSIVE WHEN ON MOBILE DEVICE */}
-                    <div>
+                    {/* REMOVE THIS PARTICULA DIV OR SET IT WELL THAT THE IMAGE DOES NOT EXPAND AS THE DIV EXPANDS AND ALSO TELL CHATGPT TO MAKE THE ZOOM WINDOW RESPONSIVE AND THE TWO SMALLER IMAGES TOO RESPONSIVE WHEN ON MOBILE DEVICE */}
+                    <div className="w-full flex flex-col">
                         <div className={`${styles.button} mt-6 rounded h-11 flex items-center`}>
                             <span className="text-white flex items-center">
                                 Add to cart <AiOutlineShoppingCart className="ml-1"/>
                             </span>
                         </div>
 
-                        <div className="flex items-center pt-8">
+                        <div className="flex items-center pt-2">
                             <img src={data.shop.shop_avatar.url} alt="" className="w-[50px] h-[50px] rounded-full mr-2" />
                             <div className="pr-8">
                                 <h3 className={`${styles.shop_name} pb-1 pt-1`}>
@@ -191,7 +193,7 @@ const ProductDetails = ({ data }) => {
                                 </h3>
                             </div>
 
-                            <div className={`${styles.button} bg-[#6443d1] mt-4 rounded h-11`}>
+                            <div className={`${styles.button} bg-[#6443d3] mt-4 rounded h-11`}>
                                 <span className="text-white flex items-center justify-center">
                                     Send Message <AiOutlineMessage className="ml-1" />
                                 </span>
@@ -202,10 +204,105 @@ const ProductDetails = ({ data }) => {
                 </div>
 
             </div>
+            
+            <ProductDetailsInfo data={data} />
+            <br/>
+            
         </div>
         ) : null}
       </div>
     );
   };
+
+  const ProductDetailsInfo = ({data}) => {
+    const [active, setActive] = useState(1)
+
+    return (
+        <div className="bg-white px-3 800px:px-10 py-2 rounded grid grid-cols-12 gap-[15px] ">
+            {/* Left Content */}
+            <div className="border-b col-span-4 p-4 h-[40vh] shadow-lg rounded-md" >
+                <div className="flex justify-between border-b pb-2">
+                    
+                    <div className="relative">
+                        <h5 className={`text-[#000] text-[13px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[18px]`}>
+                            Top Products
+                        </h5>
+                    
+                    </div>
+                    
+                    <div>
+                        <p>top products will be product this particular store sells</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Content */}
+            <div className="border-b col-span-8 flex flex-col justify-between p-4 shadow-lg rounded-md">
+                {/* Tab Navigation */}
+                <div className="flex justify-between border-b pb-2">
+                {["Seller Information", "Product Reviews", "Product Details"].map((tab, index) => (
+                    <div key={index} className="relative">
+                    <h5 className={`text-[#000] text-[13px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[18px]`}
+                        onClick={() => setActive(index + 1)}>
+                        {tab}
+                    </h5>
+                    {active === index + 1 && <div className={`${styles.active_indicator}`} />}
+                    </div>
+                ))}
+                </div>
+
+                {/* Tab Content */}
+                <div className="mt-4">
+                    {active === 1 && (
+                        <div className="w-full block 800px:flex p-5">
+                            <div className="w-full 800px:w-[50%] border">
+                                <div className="flex items-center gap-2">
+                                    <img src={data.shop.shop_avatar.url} alt="" className="w-[50px] h-[50px] rounded-full"/>
+                                    <div>
+                                        <h3 className={`${styles.shop_name}`}>
+                                            {data.shop.name}
+                                        </h3>
+                                        <h3 className='pb-3 text-[15px]'>
+                                            ({data.shop.ratings}) Ratings
+                                        </h3>
+                                    </div>
+                                    
+                                </div>
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo eius dicta nisi facere deleniti in, 
+                                    dolore natus ex minima. Eveniet id fugiat eum facilis tenetur, ea molestias odit repudiandae ex?
+                                </p>
+                            </div>
+                            
+                        </div>
+                    )}
+                    {active === 2 ? (
+                        <div className="w-full justify-center min-h-[40vh] flex items-center">
+                            <p className="text-[20px]"> No Reviews yet!</p>
+                        </div>
+                    ) : null}
+                    {active === 3 && (
+                        <>
+                            <p className="py-2 text-[15px] leading-6 pb-10 whitespace-pre-line">
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio ratione possimus
+                            dolore non voluptatibus sit, eligendi quaerat ea soluta. Est odit sint esse quo quam
+                            maxime nam numquam accusantium quia.
+                            </p>
+                            <p className="py-2 text-[15px] leading-6 pb-10 whitespace-pre-line">
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio ratione possimus
+                            dolore non voluptatibus sit, eligendi quaerat ea soluta. Est odit sint esse quo quam
+                            maxime nam numquam accusantium quia
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae aperiam alias eius ipsum assumenda nisi dolorem deleniti nam odio amet, necessitatibus beatae 
+                            laborum autem earum, sapiente, tenetur atque voluptatibus repudiandae!
+                            </p>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+
+
+    )
+  }
   
   export default ProductDetails;
