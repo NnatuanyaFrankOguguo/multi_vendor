@@ -197,9 +197,9 @@ const ProductDetails = ({ data }) => {
                                 </h3>
                             </div>
 
-                            <div className={`${styles.button} bg-[#6041c8] mt-4 rounded h-11`}>
-                                <span className="text-white flex items-center justify-center">
-                                    Send Message <AiOutlineMessage className="ml-1" />
+                            <div className={`${styles.button} bg-[#6041c8] mt-4 rounded h-11 px-3`}>
+                                <span className="text-white flex items-center justify-center gap-1">
+                                    Send Message <AiOutlineMessage />
                                 </span>
                             </div>
 
@@ -223,7 +223,7 @@ const ProductDetails = ({ data }) => {
     const [active, setActive] = useState(1)
 
     return (
-        <div className="bg-white px-3 sm:px-5 md:px-8 lg:px-10 py-2 rounded grid grid-cols-12 gap-3 sm:gap-4 md:gap-5">
+        <div className="bg-white px-3 sm:px-5 md:px-8 lg:px-10 py-2 rounded grid grid-cols-12 gap-3 sm:gap-4 md:gap-5 mt-6">
             {/* Left Content */}
             <div className="border-b col-span-12 md:col-span-4 p-4 h-[40vh] shadow-lg rounded-md">
                 <div className="flex justify-between border-b pb-2">
@@ -272,7 +272,7 @@ const ProductDetails = ({ data }) => {
                                 dolore natus ex minima. Eveniet id fugiat eum facilis tenetur, ea molestias odit repudiandae ex?
                             </p>
                         </div>
-                        
+
                         <div className="w-full sm:w-[50%] mt-2 sm:pt-0 sm:flex flex-col items-center">
                             <div className="text-left mb-2">
                                 <h5 className="font-[700]">
