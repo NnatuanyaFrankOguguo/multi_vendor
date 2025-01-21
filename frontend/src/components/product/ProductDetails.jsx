@@ -1,11 +1,15 @@
 import React, { useState, useRef } from "react";
 import styles from "../../styles/styles";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FaWhatsapp, FaShoppingCart, FaChevronDown } from 'react-icons/fa';
+import { BsCart } from 'react-icons/bs'
 
 
 //REMEMBER ADD AN OPTION OR A REPLACE IF A PRODUCT DETAILS IS NOT ADDED LIKE ASKED IN THE FORM ALWAYS PUT A DEFAULT VALUE
 // WITH THE // OPERATOR
+
+//REMEMBER TO NOTE ALL THIS STATIC DATA WILL BE REPLACE WITH DYNAMIC DATA FROM THE DATABASE
 
 const ProductDetails = ({ data }) => {
     const [select, setSelect] = useState(0);
@@ -193,11 +197,12 @@ const ProductDetails = ({ data }) => {
                                 </h3>
                             </div>
 
-                            <div className={`${styles.button} bg-[#6443d3] mt-4 rounded h-11`}>
+                            <div className={`${styles.button} bg-[#6041c8] mt-4 rounded h-11`}>
                                 <span className="text-white flex items-center justify-center">
                                     Send Message <AiOutlineMessage className="ml-1" />
                                 </span>
                             </div>
+
                         </div>
                     </div>
 
@@ -218,90 +223,124 @@ const ProductDetails = ({ data }) => {
     const [active, setActive] = useState(1)
 
     return (
-        <div className="bg-white px-3 800px:px-10 py-2 rounded grid grid-cols-12 gap-[15px] ">
+        <div className="bg-white px-3 sm:px-5 md:px-8 lg:px-10 py-2 rounded grid grid-cols-12 gap-3 sm:gap-4 md:gap-5">
             {/* Left Content */}
-            <div className="border-b col-span-4 p-4 h-[40vh] shadow-lg rounded-md" >
+            <div className="border-b col-span-12 md:col-span-4 p-4 h-[40vh] shadow-lg rounded-md">
                 <div className="flex justify-between border-b pb-2">
-                    
                     <div className="relative">
-                        <h5 className={`text-[#000] text-[13px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[18px]`}>
+                        <h5 className="text-[#000] text-[13px] sm:text-[15px] md:text-[18px] px-1 leading-5 font-[600] cursor-pointer">
                             Top Products
                         </h5>
-                    
                     </div>
-                    
                     <div>
                         <p>top products will be product this particular store sells</p>
                     </div>
                 </div>
             </div>
-
+        
             {/* Right Content */}
-            <div className="border-b col-span-8 flex flex-col justify-between p-4 shadow-lg rounded-md">
+            <div className="border-b col-span-12 md:col-span-8 flex flex-col justify-between p-4 shadow-lg rounded-md">
                 {/* Tab Navigation */}
                 <div className="flex justify-between border-b pb-2">
-                {["Seller Information", "Product Reviews", "Product Details"].map((tab, index) => (
+                    {["Seller Information", "Product Reviews", "Product Details"].map((tab, index) => (
                     <div key={index} className="relative">
-                    <h5 className={`text-[#000] text-[13px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[18px]`}
-                        onClick={() => setActive(index + 1)}>
+                        <h5
+                        className="text-[#000] text-[13px] sm:text-[15px] md:text-[18px] px-1 leading-5 font-[600] cursor-pointer"
+                        onClick={() => setActive(index + 1)}
+                        >
                         {tab}
-                    </h5>
-                    {active === index + 1 && <div className={`${styles.active_indicator}`} />}
+                        </h5>
+                        {active === index + 1 && <div className={`${styles.active_indicator}`} />}
                     </div>
-                ))}
+                    ))}
                 </div>
-
+            
                 {/* Tab Content */}
                 <div className="mt-4">
                     {active === 1 && (
-                        <div className="w-full block 800px:flex p-5">
-                            <div className="w-full 800px:w-[50%] border">
-                                <div className="flex items-center gap-2">
-                                    <img src={data.shop.shop_avatar.url} alt="" className="w-[50px] h-[50px] rounded-full"/>
-                                    <div>
-                                        <h3 className={`${styles.shop_name}`}>
-                                            {data.shop.name}
-                                        </h3>
-                                        <h3 className='pb-3 text-[15px]'>
-                                            ({data.shop.ratings}) Ratings
-                                        </h3>
-                                    </div>
-                                    
+                    <div className="w-full block sm:flex p-5">
+                        <div className="w-full sm:w-[50%]">
+                            <div className="flex items-center gap-2">
+                                <img src={data.shop.shop_avatar.url} alt="" className="w-[50px] h-[50px] rounded-full" />
+                                <div>
+                                    <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
+                                    <h3 className="pb-3 text-[15px]">({data.shop.ratings}) Ratings</h3>
                                 </div>
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo eius dicta nisi facere deleniti in, 
-                                    dolore natus ex minima. Eveniet id fugiat eum facilis tenetur, ea molestias odit repudiandae ex?
-                                </p>
                             </div>
-                            
+                            <p>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo eius dicta nisi facere deleniti in,
+                                dolore natus ex minima. Eveniet id fugiat eum facilis tenetur, ea molestias odit repudiandae ex?
+                            </p>
                         </div>
+                        
+                        <div className="w-full sm:w-[50%] mt-2 sm:pt-0 sm:flex flex-col items-center">
+                            <div className="text-left mb-2">
+                                <h5 className="font-[700]">
+                                Address:{" "}
+                                <span className="font-[500] text-[15px]">
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit
+                                </span>
+                                </h5>
+                            </div>
+                            <div className="text-left mb-1">
+                                <h5 className="font-[700]">
+                                Total Product: <span className="font-[500]">32</span>
+                                </h5>
+                            </div>
+                            <div className="text-left mb-1">
+                                <h5 className="font-[700]">
+                                Total Reviews: <span className="font-[500]">54</span>
+                                </h5>
+                            </div>
+                            <div className="text-left">
+                                <h5 className="font-[700]">
+                                <a
+                                    className="flex items-center gap-2 cursor-pointer"
+                                    href="https://wa.me/+2347070018654?text=Hello%20there%21"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <FaWhatsapp size={25} color="green" className="" />{" "}
+                                    <span className="font-[400] hover:to-blue-500">+234 (0)70 700 18654</span>
+                                </a>
+                                </h5>
+                            </div>
+                            <Link to="/">
+                                <div className={`${styles.button} bg-[#000] mt-4 rounded h-11`}>
+                                    <h4 className="text-white flex items-center gap-2">
+                                        <FaShoppingCart />
+                                        Visit Shop
+                                    </h4>
+                                </div>
+                            </Link>
+                        </div>
+                    </div>
                     )}
-                    {active === 2 ? (
-                        <div className="w-full justify-center min-h-[40vh] flex items-center">
-                            <p className="text-[20px]"> No Reviews yet!</p>
-                        </div>
-                    ) : null}
+                    {active === 2 && (
+                    <div className="w-full justify-center min-h-[40vh] flex items-center">
+                        <p className="text-[20px]"> No Reviews yet!</p>
+                    </div>
+                    )}
                     {active === 3 && (
-                        <>
-                            <p className="py-2 text-[15px] leading-6 pb-10 whitespace-pre-line">
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio ratione possimus
-                            dolore non voluptatibus sit, eligendi quaerat ea soluta. Est odit sint esse quo quam
-                            maxime nam numquam accusantium quia.
-                            </p>
-                            <p className="py-2 text-[15px] leading-6 pb-10 whitespace-pre-line">
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio ratione possimus
-                            dolore non voluptatibus sit, eligendi quaerat ea soluta. Est odit sint esse quo quam
-                            maxime nam numquam accusantium quia
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae aperiam alias eius ipsum assumenda nisi dolorem deleniti nam odio amet, necessitatibus beatae 
-                            laborum autem earum, sapiente, tenetur atque voluptatibus repudiandae!
-                            </p>
-                        </>
+                    <>
+                        <p className="py-2 text-[15px] leading-6 pb-10 whitespace-pre-line">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio ratione possimus dolore non
+                        voluptatibus sit, eligendi quaerat ea soluta. Est odit sint esse quo quam maxime nam numquam accusantium
+                        quia.
+                        </p>
+                        <p className="py-2 text-[15px] leading-6 pb-10 whitespace-pre-line">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio ratione possimus dolore non
+                        voluptatibus sit, eligendi quaerat ea soluta. Est odit sint esse quo quam maxime nam numquam accusantium
+                        quia Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae aperiam alias eius ipsum assumenda
+                        nisi dolorem deleniti nam odio amet, necessitatibus beatae laborum autem earum, sapiente, tenetur atque
+                        voluptatibus repudiandae!
+                        </p>
+                    </>
                     )}
                 </div>
             </div>
         </div>
-
-
+      
     )
   }
   

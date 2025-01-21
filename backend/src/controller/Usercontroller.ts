@@ -65,7 +65,7 @@ userRouter.post('/create-user', upload.single("file"), async (req : Request, res
         const activationToken = createActivationToken(user);
 
         //activationURL for verification of email
-        const activationURL = `http://localhost:5173/verify-email/${activationToken}`;
+        const activationURL = `http://localhost:5174/verify-email/${activationToken}`;
 
         const emailBody = `
         <p>Hello ${user.fname},</p>
