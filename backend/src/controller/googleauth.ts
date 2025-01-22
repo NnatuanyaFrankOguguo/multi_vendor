@@ -8,20 +8,20 @@ const googleRouter = express.Router();
 googleRouter.get('/google', passport.authenticate('google', { scope: ['email', 'profile'], session: false }));
 
 
-googleRouter.get('/google/callback', passport.authenticate('google', {failureRedirect: 'http://localhost:5174/login', session: false}), // Redirect to the frontend login page if authentication fails
+googleRouter.get('/google/callback', passport.authenticate('google', {failureRedirect: 'http://localhost:5173/login', session: false}), // Redirect to the frontend login page if authentication fails
     // On success, redirect to the frontend homepage
     (req: Request, res: Response) => {
 
         // If authentication fails, this will not be reached
         if(!req.user) {
-            return res.redirect('http://localhost:5174/login'); // No need to call res.redirect again
+            return res.redirect('http://localhost:5173/login'); // No need to call res.redirect again
         }
 
         // Important: Redirect AFTER setting the token
         // Use the enhanced sendToken with redirect option
         sendToken(req.user, 200, res, {
             redirect: true,
-            redirectUrl: 'http://localhost:5174/'
+            redirectUrl: 'http://localhost:5173/'
         });
     });
 

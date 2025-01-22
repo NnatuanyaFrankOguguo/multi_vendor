@@ -7,6 +7,7 @@ import BestSellingPage from '../src/pages/BestSelling.jsx';
 import EventsPage from '../src/pages/Events.jsx';
 import FAQPage from '../src/pages/FAQ.jsx';
 import ProductDetailsPage from '../src/pages/ProductDetailsPage.jsx';
+import ProfilePage from '../src/pages/ProfilePage.jsx';
 
 
 
@@ -19,6 +20,7 @@ export {
     BestSellingPage,
     EventsPage,
     FAQPage,
-    ProductDetailsPage
+    ProductDetailsPage,
+    ProfilePage
 }
 

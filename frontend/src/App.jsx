@@ -4,7 +4,7 @@ import {Routes, Route} from 'react-router-dom'
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {LoginPage, SignupPage, VerifyemailPage, Homepage, 
-  ProductPage, BestSellingPage, EventsPage, FAQPage, ProductDetailsPage } from './Routes.jsx'
+  ProductPage, BestSellingPage, EventsPage, FAQPage, ProductDetailsPage, ProfilePage } from './Routes.jsx'
 import Store from './redux/store.js';
 import { loadUser } from './redux/actions/user.js';
 import { useSelector } from 'react-redux'
@@ -37,10 +37,10 @@ const App = () => {
               <Route path="/verify-email/:activation_token" element={<VerifyemailPage />}> </Route>
               <Route path='/products' element = {<ProductPage />}> </Route>
               <Route path='/product/:name' element = {<ProductDetailsPage />}> </Route>
-
               <Route path='/best-selling' element = {<BestSellingPage />}> </Route>
               <Route path='/events' element = {<EventsPage />}> </Route>
               <Route path='/faq' element = {<FAQPage />}> </Route>
+              <Route path='/profile' element = {<ProfilePage />}> </Route>
               
               
             </Routes>
