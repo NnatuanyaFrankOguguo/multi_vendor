@@ -15,10 +15,10 @@ export const loadUser = () => async (dispatch) => {
             payload: data.user
         });
     } catch (error) {
-        console.error("LoadUser Error:", error.response?.data?.message || error.message);
+        console.error("LoadUser Error:", error.response?.data?.message || error.message); // Log the error
         dispatch({
             type: 'LoadUserFail',
-            payload: error.response.data.message
+            payload: error.response?.data?.message  || "Something went wrong"  // Handle errors
         });
     }
 }

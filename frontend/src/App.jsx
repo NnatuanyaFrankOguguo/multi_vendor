@@ -19,11 +19,12 @@ const App = () => {
     //   // If the user is authenticated, load their user data
      
     // }
-    Store.dispatch(loadUser());
+    if(!isAuthenticated){
+      Store.dispatch(loadUser())
+    }
     
     
-  }, []);
-
+  }, [isAuthenticated]); // This will re-run only when `isAuthenticated` changes
   return (
     <>
       {
