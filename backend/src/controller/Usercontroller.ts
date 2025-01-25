@@ -213,6 +213,21 @@ userRouter.get('/getuser', isAuthenticated, catchAsync(async (req: Request, res:
 })
 )
 
+// LOGOUT USER
+userRouter.get('/logout', isAuthenticated, catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.cookie('token', null, {
+            expires: new Date(Date.now()),
+            httpOnly: true,
+        });
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully",
+        });
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while logging out"));
+    }
+}));
 
 
 export default userRouter;

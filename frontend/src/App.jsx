@@ -7,10 +7,12 @@ import {LoginPage, SignupPage, VerifyemailPage, Homepage,
   ProductPage, BestSellingPage, EventsPage, FAQPage, ProductDetailsPage, ProfilePage } from './Routes.jsx'
 import Store from './redux/store.js';
 import { loadUser } from './redux/actions/user.js';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import ProtectedRoutes from './ProtectedRoutes.jsx';
 
 const App = () => {
 
+  const dispatch = useDispatch()
   const { loading, isAuthenticated } = useSelector((state) => state.user)
 
   useEffect(() => {
@@ -20,11 +22,11 @@ const App = () => {
      
     // }
     if(!isAuthenticated){
-      Store.dispatch(loadUser())
+      dispatch(loadUser())
     }
     
     
-  }, [isAuthenticated]); // This will re-run only when `isAuthenticated` changes
+  }, [isAuthenticated, dispatch]); // This will re-run only when `isAuthenticated` changes
   return (
     <>
       {
@@ -41,7 +43,10 @@ const App = () => {
               <Route path='/best-selling' element = {<BestSellingPage />}> </Route>
               <Route path='/events' element = {<EventsPage />}> </Route>
               <Route path='/faq' element = {<FAQPage />}> </Route>
-              <Route path='/profile' element = {<ProfilePage />}> </Route>
+              <Route path='/profile' element = {
+                <ProtectedRoutes isAuthenticated={isAuthenticated}>
+                  <ProfilePage />
+                </ProtectedRoutes>}> </Route>
               
               
             </Routes>
