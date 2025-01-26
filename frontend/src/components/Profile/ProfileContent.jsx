@@ -64,7 +64,7 @@ const ProfileContent = ({active}) => {
                             {/* First Name and Last Name */}
                             <div className="w-full flex flex-wrap gap-4 pb-3">
                                 <div className="w-full sm:w-[48%]">
-                                    <label className="block pb-2 text-sm sm:block hidden">First Name</label>
+                                    <label className="hidden pb-2 text-sm sm:block">First Name</label>
                                     <input
                                     type="text"
                                     name="first-name"
@@ -75,7 +75,7 @@ const ProfileContent = ({active}) => {
                                     />
                                 </div>
                                 <div className="w-full sm:w-[48%]">
-                                    <label className="block pb-2 text-sm sm:block hidden">Last Name</label>
+                                    <label className="hidden pb-2 text-sm sm:block">Last Name</label>
                                     <input
                                     type="text"
                                     name="last-name"
@@ -89,7 +89,7 @@ const ProfileContent = ({active}) => {
 
                             {/* Email Address */}
                             <div className="w-full pb-3">
-                                <label className="block pb-2 text-sm sm:block hidden">Email Address</label>
+                                <label className="hidden pb-2 text-sm sm:block">Email Address</label>
                                 <input
                                     type="email"
                                     name="email"
@@ -103,7 +103,7 @@ const ProfileContent = ({active}) => {
                             {/* Phone Number and Zip Code */}
                             <div className="w-full flex flex-wrap gap-4 pb-3">
                                 <div className="w-full sm:w-[48%]">
-                                    <label className="block pb-2 text-sm sm:block hidden">Phone Number</label>
+                                    <label className="hidden pb-2 text-sm sm:block">Phone Number</label>
                                     <input
                                     type="tel"
                                     name="phone-number"
@@ -114,7 +114,7 @@ const ProfileContent = ({active}) => {
                                     />
                                 </div>
                                 <div className="w-full sm:w-[48%]">
-                                    <label className="block pb-2 text-sm sm:block hidden">Zip Code</label>
+                                    <label className="hidden pb-2 text-sm sm:block">Zip Code</label>
                                     <input
                                     type="number"
                                     name="zip-code"
@@ -128,7 +128,7 @@ const ProfileContent = ({active}) => {
 
                             {/* Address */}
                             <div className="w-full pb-3">
-                                <label className="block pb-2 text-sm sm:block hidden">Address</label>
+                                <label className="hidden pb-2 text-sm sm:block">Address</label>
                                 <input
                                     type="text"
                                     name="address1"
@@ -142,7 +142,7 @@ const ProfileContent = ({active}) => {
                             {/* City and State */}
                             <div className="w-full flex flex-wrap gap-4 pb-3">
                                 <div className="w-full sm:w-[48%]">
-                                    <label className="block pb-2 text-sm sm:block hidden">City</label>
+                                    <label className="hidden pb-2 text-sm sm:block">City</label>
                                     <input
                                     type="text"
                                     name="city"
@@ -153,7 +153,7 @@ const ProfileContent = ({active}) => {
                                     />
                                 </div>
                                 <div className="w-full sm:w-[48%]">
-                                    <label className="block pb-2 text-sm sm:block hidden">State</label>
+                                    <label className="hidden pb-2 text-sm sm:block">State</label>
                                     <input
                                     type="text"
                                     name="state"
