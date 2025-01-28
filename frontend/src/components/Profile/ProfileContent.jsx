@@ -686,13 +686,13 @@ const Address = () => {
     // I will also put the option to have their browser access their location
     return (
         <div className="w-full px-5">
-            <div className='flex w-full items-center justify-between'>
-                <h1 className='text-[25px] font-[600] text-[#000000ba] pb-2'>
+            <div className='flex flex-wrap items-center justify-between'>
+                <h1 className='text-[20px] md:text-[25px] font-[600] text-[#000000ba] pb-2'>
                     My Addresses
                 </h1>
 
                 <div className={`${styles.button} flex items-center justify-center w-[100px] h-[40px] rounded-[5px] cursor-pointer`}>
-                    <span className='text-[#fff]'>
+                    <span className='text-[#fff] text-sm md:text-base'>
                         Add New {/*  we will make a popup for the add new but it will be later */}
                     </span>
                 </div>
@@ -700,18 +700,18 @@ const Address = () => {
             <br/>
             <br/>
             {/*  Here we will show the payment methods (stored in a database) all these will be dynamic*/}
-            <div className="w-full bg-white h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10">
-                <div className="flex items-center">
-                    <h3 className='pl-5 font-[600]'>Default</h3>
+            <div className="w-full bg-white h-auto md:h-[70px] rounded-[4px] flex flex-wrap items-center px-3 shadow justify-between md:pr-10 gap-4">
+                <div className="flex items-center w-full md:w-auto">
+                    <h3 className='pl-4 font-[600] text-sm md:text-base'>Default</h3>
                 </div>
-                <div className='pl-8 flex items-center'>
+                <div className='flex items-center min-w-[100px] md:w-auto md:pl-8 text-sm md:text-base'>
                     <h6>Lorem, ipsum dolor sit amet addkfrg (any address)</h6>
                 </div>
-                <div className='pl-8 flex items-center'>
+                <div className='flex items-center w-full md:w-auto md:pl-8 text-sm md:text-base'>
                     <h6>(+234) 70 700 18654</h6>
                 </div>
 
-                <div className='min-w-[10%] flex items-center justify-between pl-8'>
+                <div className='flex items-center justify-end w-full md:w-auto'>
                     <AiOutlineDelete size={25} color='#ff0000' className='cursor-pointer' />
                 </div>
 

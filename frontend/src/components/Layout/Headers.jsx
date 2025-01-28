@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import server from '../../server'
 import Cart from '../Cart/Cart.jsx'
 import Wishlist from '../wishlist/Wishlist.jsx'
+import { RxCross1 } from 'react-icons/rx'
 
 const Header = ({activeHeading}) => { //receiving the activeHeading from the HomePage component and send it to the Navbar component
 
@@ -62,6 +63,9 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
     // FOR THE WISHLIST FUNCTIONALITY
     const [openWishlist, setOpenWishlist] = useState(false)
 
+    //SET OPEN MOBILE SCREEN FOR THE MENU BAR TO POP UP AT THE LEFT
+    const [openMobile, setOpenMobile] = useState(false)
+
 
     
     
@@ -80,11 +84,11 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                 </div>
                 {/* searchbox */}
                 <div className='w-[50%] relative'>
-                    <input type="text" name="" placeholder="Search Product..." value={searchTerm} onChange={handleSearch} 
+                    <input type="search" name="" placeholder="Search Product..." value={searchTerm} onChange={handleSearch} 
                     className='h-[40px] w-full px-2 border-green-300 border-[2px] rounded-md' />
                     <AiOutlineSearch size={30} className='absolute right-2 top-1.5 cursor-pointer' />
                     {
-                        searchData && searchData.length !== 0 ? (
+                        searchTerm !== '' ? searchData && (
                             <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
                                 {
                                     searchData && searchData.map((product, index) => {
@@ -104,13 +108,13 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                                 }
                             </div>
 
-                        ) : null 
-                        
+                        ) 
+                        : null
                     }
                 </div>
 
                 <div className={`${styles.button}`}>
-                    <Link to='/farmer'>
+                    <Link to='/seller'>
                         <h1 className='text-[#fff] flex items-center mb-1'> Seller Login <IoIosArrowForward className="ml-1 mt-1"  /></h1>
                     </Link>
                 </div>
@@ -198,6 +202,114 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                 </div>
             </div>
         </div>
+
+        {/* MOBILE SCREEN HEADER */}
+
+        <div className={` ${active === true ? 'shadow-sm fixed top-0 left-0 z-10' : null} w-full h-[60px] bg-[#8B4513] z-30 top-0 left-0 shadow-md flex items-center justify-between 800px:hidden`}>
+            <div className='w-full flex items-center justify-between'>
+                <div>
+                    <BiMenuAltLeft size={40} className='ml-4 cursor-pointer' color="white" onClick={() => setOpenMobile(true)}/>
+                </div>
+                <div>
+                    <Link to='/' className="flex items-center space-x-1">
+                        <img src={leaf} alt='logo' className='h-10 w-10/12' loading='lazy'/>
+                        <p className="text-base text-white font-semibold">FrankFort</p>
+                    </Link>
+                </div>
+
+                <div>
+                    <div className="relative mr-[20px]">
+                        <img src={cart} style={{width: "30px"}} alt="" loading='lazy' />
+                        <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
+                            1
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {/* HEADER SIDEBAR from left */}
+        {
+            openMobile && (
+                <div className="fixed w-full bg-[#0000005f] z-40 h-full top-0 left-0">
+                    <div className="fixed w-[70%] bg-[#F5F5DC] h-screen top-0 left-0 z-10 overflow-y-scroll">
+                        <div className="w-full justify-between flex pr-3">
+                            <div>
+                                <div className="relative mr-[15px]">
+                                    <AiOutlineHeart size={30} className='mt-5 ml-3'/>
+                                    <span className='absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center'>
+                                        0
+                                    </span>
+                                </div>
+                            </div>
+                            <RxCross1 size={27} className='ml-4 mt-5 cursor-pointer' onClick={() => setOpenMobile(false)}/>  
+                        </div>
+
+                        {/* SEARCH BAR */}
+                        <div className="my-8 w-[94%] h-[40px] mx-2 relative">
+                            <input type="search" placeholder="Search Product..." 
+                            className="w-full px-2 py-2 rounded-md border-[2px] border-[#3bc177] text-sm "
+                            value={searchTerm} onChange={handleSearch}/>
+
+                            {
+                                searchTerm !== '' ? searchData && (
+                                    <div className="absolute bg-slate-50 shadow-sm-2 z-10 w-full left-0 p-3">
+                                        {
+                                            searchData && searchData.map((product, index) => {
+                                                const d = product.name
+
+                                                const product_name = d.replace(/\s+/g, '-'); //to remove the spaces on the initial name so each word will be able to come up in the search
+                                                return (
+                                                    <Link to={`/product/${product_name}`}>
+                                                        <div className="w-full flex items-start-py-3">
+                                                            <img src={product.image_Url[0].url} alt="" className='w-[40px] h-[40px] mr-[10px]' />
+                                                            <h1>{product.name}</h1>
+                                                        </div>
+                                                    </Link>
+                                                
+                                                )
+                                            })
+                                        }
+                                    </div>
+
+                                )
+                                : null 
+                                
+                            }    
+                        </div>
+
+                        {/* Navigation Components */}
+                        <Navbar active={activeHeading}  />
+
+                        {/* SELLER */}
+                        <div className={`${styles.button} ml-4 h-[25px] w-[125px]`}>
+                            <Link to='/seller'>
+                                <h1 className='text-[#fff] flex items-center mb-1'> Seller Login <IoIosArrowForward className="ml-1 mt-1"  /></h1>
+                            </Link>
+                        </div>
+                        <br/>
+                        {/* Profile */}
+                        <div className="flex w-full justify-center">
+                            {
+                                isAuthenticated ? (
+                                    <Link to={`/profile`} className='flex items-center gap-1  justify-center shadow-md p-2 rounded-md'>
+                                        <img src={user.googleId ? user.avatar : `${server}/images/${user.avatar}`} className="w-[50px] h-[50px] rounded-full border-[2px] border-green-300  "  alt="" /> 
+                                        <span className='font-bold'> {user ? (initials(user.fname,user.lname)) : ""} </span>
+                                    </Link> 
+
+                                ) : (
+                                    <>
+                                        <Link to='/Login' className='text-[18px] pr-[10px] text-[#000000b7]'>Login/</Link>
+                                        <Link to='/sign-up' className='text-[18px] text-[#000000b7]'>Sign up</Link>
+                                    </>
+                                )
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            )
+        }
     </>
   )
 }

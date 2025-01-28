@@ -197,7 +197,7 @@ const ProductDetails = ({ data }) => {
                                 </h3>
                             </div>
 
-                            <div className={`${styles.button} bg-[#6041c8] mt-4 rounded h-11 px-3`}>
+                            <div className={`${styles.button} !bg-[#6041c8] mt-4 rounded h-11 px-3`}>
                                 <span className="text-white flex items-center justify-center gap-1">
                                     Send Message <AiOutlineMessage />
                                 </span>
