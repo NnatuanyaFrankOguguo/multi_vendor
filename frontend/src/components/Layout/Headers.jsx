@@ -114,7 +114,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                 </div>
 
                 <div className={`${styles.button}`}>
-                    <Link to='/seller'>
+                    <Link to='/store-create'>
                         <h1 className='text-[#fff] flex items-center mb-1'> Seller Login <IoIosArrowForward className="ml-1 mt-1"  /></h1>
                     </Link>
                 </div>
@@ -283,7 +283,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
 
                         {/* SELLER */}
                         <div className={`${styles.button} ml-4 h-[25px] w-[125px]`}>
-                            <Link to='/seller'>
+                            <Link to='/store-create'>
                                 <h1 className='text-[#fff] flex items-center mb-1'> Seller Login <IoIosArrowForward className="ml-1 mt-1"  /></h1>
                             </Link>
                         </div>
