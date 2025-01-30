@@ -25,6 +25,8 @@ export interface IUser extends Document {
     isVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
+    resetPasswordToken: string;
+    resetPasswordTime: Date;
 
     // Add the methods
     comparePassword(candidatePassword: string): Promise<boolean>;
@@ -104,10 +106,19 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    resetPasswordToken: String,
+    resetPasswordTime: Date,
     
 
 }, 
 {timestamps: true});
+
+userSchema.pre("save", function(next) {
+    if (this.isModified("email")) {
+        this.email = this.email.toLowerCase();
+    }
+    next();
+});
 
 // Hash password before saving to database
 

@@ -10,6 +10,7 @@ import passport from './config/passport.js';
 //Importing routes
 import googleRouter from './controller/googleauth.js';
 import userRouter from './controller/Usercontroller.js';
+import storeRouter from './controller/Storecontroller.js';
 const port = process.env.PORT || 5000;
 const app = express();
 //middleware
@@ -34,6 +35,7 @@ app.use(passport.session());
 app.use('/auth', googleRouter);
 app.use('/images', express.static('uploads'));
 app.use('/api/users', userRouter);
+app.use('/api/v2/stores', storeRouter);
 ConnectDB();
 //when the server is running
 app.get('/', (req, res) => {

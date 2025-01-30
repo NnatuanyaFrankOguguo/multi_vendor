@@ -73,7 +73,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    resetPasswordToken: String,
+    resetPasswordTime: Date,
 }, { timestamps: true });
+userSchema.pre("save", function (next) {
+    if (this.isModified("email")) {
+        this.email = this.email.toLowerCase();
+    }
+    next();
+});
 // Hash password before saving to database
 userSchema.pre('save', async function (next) {
     const user = this;
