@@ -32,7 +32,7 @@ const storeSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'seller'
+        default: 'Seller'
     },
     withdrawMethod: {
         provider: String,

@@ -84,7 +84,7 @@ userRouter.post('/create-user', upload.single("file"), async (req : Request, res
             res.status(200).json({
                 success: true,
                 message: ` Check your email:- ${user.email} for user activation link.`,
-                data: sendingEmail, // You can also send the activation link in the response data for immediate use
+               // data: sendingEmail, // You can also send the activation link in the response data for immediate use
             })
             
         } catch (error) {
