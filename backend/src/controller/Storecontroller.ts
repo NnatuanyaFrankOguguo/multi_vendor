@@ -11,6 +11,9 @@ import { catchAsync } from "../middleware/catchAsync.js";
 import sendToken from "../utils/jwtToken.js";
 import isAuthenticated from "../middleware/auth.js";
 import Store from "../models/Store.js"
+import {v4 as uuidv4 } from 'uuid';
+import redisClient from '../utils/redistoken.js'
+import {z} from 'zod'
 
 
 const storeRouter = express.Router();
@@ -22,10 +25,22 @@ interface StorePayload {
     email: string;
     password: string;
     avatar?: string;
-    phoneNumber: number;
+    phoneNumber: string;
     address: string;
 
 }
+
+// Validation Schema using Zod
+const StoreSchema = z.object({
+    name: z.string().trim().min(3, "Name must be at least 3 characters"),
+    email: z.string().trim().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/\d/, "Password must contain at least one number")
+    .regex(/[\W_]/, "Password must contain at least one special character"),
+    phoneNumber: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number (E.164 format)"),
+    address: z.string().min(10, "Address must be at least 10 characters"),
+  });
 
 const deleteFile = (filepath: string, next: NextFunction) => {
     fs.unlink(filepath, (err) => {
@@ -41,52 +56,54 @@ const deleteFile = (filepath: string, next: NextFunction) => {
 storeRouter.post('/create-store', upload.single("file"), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {email, name, password, address, number} = req.body;
-        const existingStore = await Store.findOne({email})
-        if(existingStore) {
-            if(req.file){
-                const filename = req.file?.filename;
-                const filepath = `uploads/${filename}`;
-                deleteFile(filepath, next)
-            }
-            return next(createvalidateError("Store already exists with this email"));
+        const validationResult = StoreSchema.safeParse({name, email, password, phoneNumber: number, address});
+        if(!validationResult.success) {
+            if(req.file) deleteFile(req.file.path, next);
+            return next(createvalidateError(validationResult.error.message));
+        }
+
+        // Check if store already exists
+        const existingStore = await Store.findOne({ email });
+        if (existingStore) {
+        if (req.file) deleteFile(req.file.path, next);
+        return next(createvalidateError("Store already exists with this email"));
         }
 
         const fileName = req.file?.filename
-        const fileUrl = path.join(fileName || "..uploads/default.jpg") //incase filename name doesnt exists there or string filepath is there
-        const store: StorePayload = {
-            name,
-            email,
-            address,
-            password,
-            phoneNumber : number,
-            avatar : fileUrl,       
-        }
-        //to create token for our user
-        const activateToken = createActivationToken(store);
+        const fileUrl = fileName ? `/uploads/${fileName}` : "/defaul.jpg"; // Use absolute path
 
-        //activationURL for verification of email
-        const activationURL = `http://localhost:5173/seller/verify-email/${activateToken}`;
+        //create activation token (UUID)
+        const activationId = uuidv4();
+        // hashed password cause its not yet hashed
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        await redisClient.set( 
+            activationId,
+            JSON.stringify({name, email, password: hashedPassword, address, phoneNumber: number, avatar:fileUrl }),
+            {"EX": 1800} // Expires in 30mins
+        );
+        
+        const activationURL = `${process.env.FRONTEND_URL}/seller/verify-email/${activationId}`;
 
         const emailBody = `
-        <p>Hello ${store.name},</p>
+        <p>Hello ${name},</p>
         <p>Please click on the following link to activate your store account:</p>
         <a href="${activationURL}" style="color: #1a73e8; text-decoration: none; font-weight: bold;">→ Click Here ←</a>
         <p>Thank you!</p> `;
         // AFTER SUCCESSFULLY VERIFICATION I GO CON SEND A WELCOME EMAIL TO THEM AND OUR TERMS AND SERVICES DOCS THINGS LIKE THAT
 
         try {
-            const sendingEmail = await sendMail({
-                email:store.email,
+            await sendMail({
+                email:email,
                 subject: "Activate your store account",
                 html: emailBody,
             })
             res.status(200).json({
                 success: true,
-                message: `Check your email:- ${store.email} for store activation link.`   
+                message: `Check your email (${email}) for the activation link.`   
             })
         } catch (error) {
-            return next(createDataBaseError("Error sending activation email"))
-            
+            return next(createDataBaseError("Error sending activation email"))   
         }
         
 
@@ -100,33 +117,25 @@ storeRouter.post('/create-store', upload.single("file"), async (req: Request, re
     }
 } )
 
-//Creating the activation token for the Store
-const createActivationToken = (store: StorePayload) : string => {
-    const payload = store // taking the store payload(data/details) to make as the jwt token
-    const secret = process.env.JWT_SECRET;
-    if(!secret){
-        throw new Error("Missing JWT_SECRET environment variable");
-    }
-    return jwt.sign(payload, secret, {expiresIn: "5m"})
-
-}
-
 storeRouter.post('store/verify-email', catchAsync(async(req: Request, res:Response, next: NextFunction) => {
     try {
-        const {activation_token} = req.body;
-        const decoded = jwt.verify(activation_token, process.env.JWT_SECRET as string);
-        if(!decoded){
-            return next(createvalidateError("Invalid or expired token"));
-        }
-        //take the details from the decoded token
-        const {name, email, avatar, password, address, phoneNumber} = decoded as StorePayload
+        const {activation_id} = req.body;
 
-        let store = await Store.findOne({email});
-        if(store){
-            return next(createvalidateError("Store already exist with this email"))
+        //Fetch activation data from Redis
+        const storeData = await redisClient.get(activation_id);
+        if(!storeData){
+            return next(createvalidateError("Invalid or expired activation link"));
         }
 
-        store = await Store.create({
+        const {name, email, password, address, phoneNumber, avatar } = JSON.parse(storeData);
+
+        //check if store already exists (double-check)
+        const existingStore = await Store.findOne({email});
+        if(existingStore){
+            return next(createvalidateError("Store already exists with this email"));
+        }
+
+        const store = await Store.create({
             name,
             email,
             address,
@@ -134,7 +143,10 @@ storeRouter.post('store/verify-email', catchAsync(async(req: Request, res:Respon
             password,
             avatar   
         })
+        //clean Redis data
+        await redisClient.del(activation_id);
 
+        //send JWT Token
         sendToken(store, 201, res)
 
     } catch (error) {

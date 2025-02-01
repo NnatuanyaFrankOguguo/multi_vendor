@@ -20,7 +20,7 @@ const storeSchema = new mongoose.Schema({
         select: false // Do not return password in response
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         required: true,
     },
     description: {
@@ -157,15 +157,6 @@ storeSchema.pre("save", function (next) {
     next();
 });
 // Hash password before saving to database
-storeSchema.pre('save', async function (next) {
-    const seller = this;
-    if (!seller.isModified('password')) {
-        return next();
-    }
-    const salt = await bcrpyt.genSalt(10);
-    seller.password = await bcrpyt.hash(seller.password, salt);
-    next();
-});
 /*writing the generate token function */
 storeSchema.methods.getJwtToken = function () {
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_SECRET_EXPIRATION });

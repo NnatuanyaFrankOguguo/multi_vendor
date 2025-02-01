@@ -24,7 +24,7 @@ export interface IStore extends Document {
     email: string;
     password: string;
     role: string;
-    phoneNumber?: number;
+    phoneNumber?: string;
     address?: String;
     avatar?: string;
     isVerified: boolean;
@@ -84,7 +84,7 @@ const storeSchema: Schema<IStore> = new mongoose.Schema({
         select: false  // Do not return password in response
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         required: true,
     },
     description: {
@@ -235,17 +235,6 @@ storeSchema.pre("save", function(next) {
 });
 
 // Hash password before saving to database
-
-storeSchema.pre('save', async function(next) {
-    const seller = this as IStore;
-    if (!seller.isModified('password')) {
-        return next();
-    }
-
-    const salt = await bcrpyt.genSalt(10);
-    seller.password = await bcrpyt.hash(seller.password, salt);
-    next();
-});
 
 /*writing the generate token function */
 storeSchema.methods.getJwtToken = function (): string {
