@@ -40,7 +40,7 @@ const ShopCreate = () => {
 
         try {
             // const config = {headers: {'Content-Type': 'multipart/form-data'}}
-            const response = await axios.post(`${server}/api/users/create-user`, formData, config);
+            const response = await axios.post(`${server}/api/v2/stores/create-store`, formData, config);
             //alert(response.data.message) //do sweetalert
             console.log(response.data.message);
             toast.success(response.data.message)
@@ -95,7 +95,7 @@ const ShopCreate = () => {
                         <div>
                             
                             <div className='mt-1'>
-                                <input type='number' name='Phone' placeholder="Phone Number"  autoComplete='number' required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+                                <input type='number' name='Phone' placeholder="Phone Number +234"  autoComplete='number' required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
                                 className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' />
 
                             </div>
