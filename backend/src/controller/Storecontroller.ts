@@ -12,6 +12,8 @@ import sendToken from "../utils/jwtToken.js";
 import isAuthenticated from "../middleware/auth.js";
 import Store from "../models/Store.js"
 import {z} from 'zod'
+import e from "express";
+import sendStoreToken from "../utils/jwtStoreToken.js";
 
 
 const storeRouter = express.Router();
@@ -156,8 +158,10 @@ storeRouter.post('/verify-email', catchAsync(async(req: Request, res:Response, n
             avatar   
         })
 
-        //send JWT Token
-        sendToken(store, 201, res)
+        //will not use the sendToken cookie function cause that one will be for user
+        //instead we will create a new sendStoreToken which will be for seller to clearly define their seperate role
+        // for user who might be both seller and buyer/user thru the token it can be able to tell their difference 
+        sendStoreToken(store, 201, res)
 
     } catch (error) {
 
@@ -168,5 +172,32 @@ storeRouter.post('/verify-email', catchAsync(async(req: Request, res:Response, n
 
 )
 
+// stores log in router
+storeRouter.post('/login-store', catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return next(createvalidateError("Please provide both email and password"));
+        }
+
+        // Check if the user exists
+        const logStore = await Store.findOne({ email }).select('+password'); // Include the password in the query result
+
+        if (!logStore) {
+            return next(createvalidateError("User not found"));
+        }
+
+        const isMatch = await logStore.comparePassword(password); 
+        if (!isMatch) {
+            return next(createvalidateError("Invalid credentials"));
+        }
+ 
+         // Generate token for the user and send it to the frontend
+        sendStoreToken(logStore, 201, res);
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while logging in"));
+    }
+}));
 
 export default storeRouter 

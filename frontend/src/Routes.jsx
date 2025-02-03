@@ -10,6 +10,7 @@ import ProductDetailsPage from '../src/pages/ProductDetailsPage.jsx';
 import ProfilePage from '../src/pages/ProfilePage.jsx';
 import StoreCreatePage from '../src/pages/StoreCreatePage.jsx';
 import StoreVerifyemailPage from '../src/pages/StoreVerifyemail.jsx';
+import LoginStorePage from '../src/pages/LoginStorePage.jsx';
 
 
 export {
@@ -24,6 +25,7 @@ export {
     ProductDetailsPage,
     ProfilePage,
     StoreCreatePage,
-    StoreVerifyemailPage 
+    StoreVerifyemailPage,
+    LoginStorePage
 }
 

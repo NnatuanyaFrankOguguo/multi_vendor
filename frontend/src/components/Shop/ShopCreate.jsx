@@ -172,7 +172,7 @@ const ShopCreate = () => {
 
                         <div className={`${styles.normalFlex} w-full`}>
                             <h4>Already have an account?</h4>
-                            <Link to="/login" className="text-blue-600 pl-2">
+                            <Link to="/login-store" className="text-blue-600 pl-2">
                                 Login
                             </Link>
                         </div>
