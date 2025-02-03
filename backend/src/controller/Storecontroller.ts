@@ -68,7 +68,7 @@ storeRouter.post('/create-store', upload.single("file"), async (req: Request, re
         }
 
         const fileName = req.file?.filename
-        const fileUrl = fileName ? `/uploads/${fileName}` : "/default.jpg"; // Use absolute path
+        const fileUrl = path.join(fileName ? `/images/${fileName}` : "..images/default.jpg"); // Use absolute path
 
         //create activation token (UUID)
         //const activationId = uuidv4();
@@ -87,7 +87,7 @@ storeRouter.post('/create-store', upload.single("file"), async (req: Request, re
 
         const activationToken = createActivationToken(store)
 
-        const activationURL = `${process.env.FRONTEND_URL}/seller/verify-email/${activationToken}`;
+        const activationURL = `${process.env.FRONTEND_URL}/store-verify-email/${activationToken}`;
 
         const emailBody = `
         <p>Hello ${name},</p>
@@ -129,8 +129,9 @@ const createActivationToken = (storeData : StorePayload): string => {
     return jwt.sign(storeData, secret, {expiresIn: "30m"}  )
 }
 
-storeRouter.post('/store/verify-email', catchAsync(async(req: Request, res:Response, next: NextFunction) => {
+storeRouter.post('/verify-email', catchAsync(async(req: Request, res:Response, next: NextFunction) => {
     try {
+        
         const {activation_token} = req.body;
 
         const decoded = jwt.verify(activation_token, process.env.JWT_SECRET as string);

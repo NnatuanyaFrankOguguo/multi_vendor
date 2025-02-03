@@ -89,7 +89,7 @@ const storeSchema = new mongoose.Schema({
     rating: {
         type: Number,
         default: 0,
-        min: [1, "Rating cannot be negative"],
+        min: [0, "Rating cannot be negative"],
         max: [5, "Rating cannot be more than 5"]
     },
     reviews: [
@@ -157,7 +157,7 @@ storeSchema.pre("save", function (next) {
     next();
 });
 // Hash password before saving to database
-/*writing the generate token function */
+/*writing the generate token function*/
 storeSchema.methods.getJwtToken = function () {
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_SECRET_EXPIRATION });
 };

@@ -9,6 +9,7 @@ import FAQPage from '../src/pages/FAQ.jsx';
 import ProductDetailsPage from '../src/pages/ProductDetailsPage.jsx';
 import ProfilePage from '../src/pages/ProfilePage.jsx';
 import StoreCreatePage from '../src/pages/StoreCreatePage.jsx';
+import StoreVerifyemailPage from '../src/pages/StoreVerifyemail.jsx';
 
 
 export {
@@ -22,6 +23,7 @@ export {
     FAQPage,
     ProductDetailsPage,
     ProfilePage,
-    StoreCreatePage 
+    StoreCreatePage,
+    StoreVerifyemailPage 
 }
 
