@@ -114,7 +114,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                 </div>
 
                 <div className={`${styles.button}`}>
-                    <Link to='/store-create'>
+                    <Link to='/login-store'>
                         <h1 className='text-[#fff] flex items-center mb-1'> Seller Login <IoIosArrowForward className="ml-1 mt-1"  /></h1>
                     </Link>
                 </div>
@@ -174,7 +174,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                             {
                                 isAuthenticated ? (
                                     <Link to={`/profile`} className='flex items-center gap-1  justify-center '>
-                                        <img src={user.googleId ? user.avatar : `${server}/images/${user.avatar}`} className="w-[40px] h-[40px] rounded-full"  alt="" /> 
+                                        <img src={user.googleId ? user.avatar : `${server}${user.avatar.replace(/\\/g, '/')}`} className="w-[40px] h-[40px] rounded-full"  alt="" /> 
                                         <span className='font-bold'> {user ? (initials(user.fname,user.lname)) : ""} <FiChevronDown size={20} className='text-gray-900' /></span>
                                     </Link> 
 
@@ -283,7 +283,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
 
                         {/* SELLER */}
                         <div className={`${styles.button} ml-4 h-[25px] w-[125px]`}>
-                            <Link to='/store-create'>
+                            <Link to='/login-store'>
                                 <h1 className='text-[#fff] flex items-center mb-1'> Seller Login <IoIosArrowForward className="ml-1 mt-1"  /></h1>
                             </Link>
                         </div>
@@ -293,7 +293,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                             {
                                 isAuthenticated ? (
                                     <Link to={`/profile`} className='flex items-center gap-1  justify-center shadow-md p-2 rounded-md'>
-                                        <img src={user.googleId ? user.avatar : `${server}/images/${user.avatar}`} className="w-[50px] h-[50px] rounded-full border-[2px] border-green-300  "  alt="" /> 
+                                        <img src={user.googleId ? user.avatar : `${server}${user.avatar.replace(/\\/g, '/')}`} className="w-[50px] h-[50px] rounded-full border-[2px] border-green-300  "  alt="" /> 
                                         <span className='font-bold'> {user ? (initials(user.fname,user.lname)) : ""} </span>
                                     </Link> 
 

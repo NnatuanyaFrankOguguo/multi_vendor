@@ -34,7 +34,7 @@ userRouter.post('/create-user', upload.single("file"), async (req, res, next) =>
             return next(createvalidateError("User already exists"));
         }
         const fileName = req.file?.filename;
-        const fileUrl = path.join(fileName || '..uploads/default.jpg'); //incase filename name doesnt exists there or string filepath is there
+        const fileUrl = path.join(fileName ? `/images/${fileName}` : "/images/default.jgp"); //use an absolute path
         const user = {
             fname: fname,
             lname: lname,

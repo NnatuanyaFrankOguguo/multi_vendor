@@ -23,7 +23,7 @@ const LoginStore = () => {
             toast.success("Login Success!")
             //console.log(response)
             // localStorage.setItem('token', response.data.token)
-            navigate('/')
+            //navigate('/shop') with the store login no need to do a navigate to take the seller to the shop we will do it on the frontend (to call our loadStore() action so that we on load if its the store/seller token it takes them to the to shop page)
             window.location.reload(true)
         } catch (error) {
             toast.error(error.response.data.message)

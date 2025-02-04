@@ -24,7 +24,7 @@ const sendStoreToken = (
         };
 
         // Set the cookie
-        res.cookie("strs-tk", token, cookieOptions);
+        res.cookie("strs_tk", token, cookieOptions);
 
         // Handle redirect case (for OAuth)
         if (options.redirect && options.redirectUrl) {

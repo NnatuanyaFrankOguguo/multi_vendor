@@ -9,7 +9,7 @@ const sendStoreToken = (store, statusCode, res, options = {}) => {
             secure: process.env.NODE_ENV === 'production',
         };
         // Set the cookie
-        res.cookie("strs-tk", token, cookieOptions);
+        res.cookie("strs_tk", token, cookieOptions);
         // Handle redirect case (for OAuth)
         if (options.redirect && options.redirectUrl) {
             return res.redirect(options.redirectUrl);

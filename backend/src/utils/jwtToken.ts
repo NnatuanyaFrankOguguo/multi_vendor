@@ -94,7 +94,7 @@ const sendToken = (
         };
 
         // Set the cookie
-        res.cookie("token", token, cookieOptions);
+        res.cookie("us_tk", token, cookieOptions);
 
         // Handle redirect case (for OAuth)
         if (options.redirect && options.redirectUrl) {

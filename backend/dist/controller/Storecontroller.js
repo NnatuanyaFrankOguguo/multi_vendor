@@ -7,6 +7,7 @@ import fs from 'fs';
 import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import { catchAsync } from "../middleware/catchAsync.js";
+import isStoreAuthenticated from "../middleware/storeauth.js";
 import Store from "../models/Store.js";
 import { z } from 'zod';
 import sendStoreToken from "../utils/jwtStoreToken.js";
@@ -142,7 +143,7 @@ storeRouter.post('/login-store', catchAsync(async (req, res, next) => {
         // Check if the user exists
         const logStore = await Store.findOne({ email }).select('+password'); // Include the password in the query result
         if (!logStore) {
-            return next(createvalidateError("User not found"));
+            return next(createvalidateError("Store not found"));
         }
         const isMatch = await logStore.comparePassword(password);
         if (!isMatch) {
@@ -153,6 +154,24 @@ storeRouter.post('/login-store', catchAsync(async (req, res, next) => {
     }
     catch (error) {
         return next(createDataBaseError("An error occurred while logging in"));
+    }
+}));
+storeRouter.get('/getseller', isStoreAuthenticated, catchAsync(async (req, res, next) => {
+    if (!req.store) {
+        return next(createDataBaseError("Seller/store not authenticated"));
+    }
+    try {
+        const store = await Store.findById(req.store._id.toString()); //req.user.id user from the login cookies in the fronted // Ensure req.user is properly typed
+        if (!store) {
+            return next(createDataBaseError("Seller/store not found"));
+        }
+        res.status(200).json({
+            success: true,
+            store,
+        });
+    }
+    catch (error) {
+        return next(createDataBaseError("An error occurred while fetching store data"));
     }
 }));
 export default storeRouter;
