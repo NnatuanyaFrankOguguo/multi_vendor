@@ -40,98 +40,100 @@ const Login = () => {
     }
 
   return (
-    <div className='min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
-        <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-            <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>
-                Login to your account
-            </h2>
+    <div className='min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
+    <div className='sm:mx-auto sm:w-full sm:max-w-md'>
+        <h2 className='mt-6 text-center text-4xl font-bold text-green-800 font-serif'>
+            Welcome Back 🌾
+        </h2>
+        <p className='mt-2 text-center text-sm text-green-600'>
+            Cultivate your agricultural network
+        </p>
 
-            <div className='mt-8 sm:mx-auto sm:w-full sm:max-v-md'>
-                <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-                    <form className='space-y-6' onSubmit={handleSubmit}>
-                        <div className='flex justify-center items-center gap-3  rounded-lg border-2 hover:border-green-500  hover:rounded-full cursor-pointer '>
-                            <button className='flex items-center gap-2 py-2'  onClick={googleAuth}><img src={google} height={25} width={25} alt="google" />Google</button>
+        <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
+            <div className='bg-white/90 backdrop-blur-lg py-8 px-4 shadow-lg rounded-xl sm:px-10 border border-green-100'>
+                <form className='space-y-6' onSubmit={handleSubmit}>
+                    <div className='flex justify-center items-center gap-3 rounded-xl border-2 border-green-200 hover:border-green-500 transition-all duration-300'>
+                        <button className='flex items-center gap-2 py-2 px-4 text-gray-700 hover:text-green-800 font-medium' onClick={googleAuth}>
+                            <img src={google} className='h-6 w-6' alt="google" />
+                            Continue with Google
+                        </button>
+                    </div>
+
+                    <div className='flex items-center justify-center space-x-3'>
+                        <div className='h-px bg-green-200 w-1/4'></div>
+                        <span className='text-sm text-green-500'>Or grow with credentials</span>
+                        <div className='h-px bg-green-200 w-1/4'></div>
+                    </div>
+
+                    <div>
+                        <input 
+                            type='email' 
+                            name='email' 
+                            placeholder="Your Email"  
+                            className='w-full px-4 py-3 rounded-lg border border-green-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition duration-300  placeholder:text-gray-700'
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+
+                    <div className='relative'>
+                        <input 
+                            type={visibility ? "text" : "password"} 
+                            name='password' 
+                            placeholder="Password"  
+                            className='w-full px-4 py-3 rounded-lg border border-green-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition duration-300 placeholder:text-gray-700'
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        {visibility ? (
+                            <AiOutlineEye className="absolute right-3 top-4 cursor-pointer text-green-500 hover:text-green-600" size={22} onClick={() => setVisibility(false)} />
+                        ) : (
+                            <AiOutlineEyeInvisible className="absolute right-3 top-4 cursor-pointer text-green-500 hover:text-green-600" size={22} onClick={() => setVisibility(true)} />
+                        )}
+                    </div>
+
+                    <div className='flex items-center justify-between'>
+                        <div className='flex items-center'>
+                            <input 
+                                type="checkbox" 
+                                id="remember-me" 
+                                className='h-4 w-4 text-green-600 border-green-300 rounded focus:ring-green-500'
+                            />
+                            <label htmlFor="remember-me" className='ml-2 block text-sm text-green-600'>
+                                Remember me
+                            </label>
                         </div>
-
-                        <div className='flex items-center justify-center'>
-                            <div className=' h-0.5 shadow-full rounded-full w-5 bg-gray-900'></div>
-                            <p className='text-sm weight-300 text-gray-500'>OR </p>
-                            <div className='bg-gray-900 shadow-lg rounded-full h-0.5 w-9'></div>
-                        </div>
-
-                        <div>
-                    
-                            <div className='mt-1'>
-                                <input type='email' name='email' placeholder="Your Email"  autoComplete='email' required value={email} onChange={(e) => setEmail(e.target.value)}
-                                className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' />
-
-                            </div>
-                        </div>
-
-                        <div>
-                          
-                            <div className='mt-1 relative'>
-                                <input type={visibility ? "text" : "password"} name='password' placeholder="Password"  autoComplete='current-password' required value={password} onChange={(e) => setPassword(e.target.value)}
-                                className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' />
-
-                                {
-                                    visibility ? <AiOutlineEye className="absolute right-2 top-1.5 cursor-pointer" size={25} onClick={() => setVisibility(false)} />
-                                    : <AiOutlineEyeInvisible className="absolute right-2 top-1.5 cursor-pointer" size={25} onClick={() => setVisibility(true)} />
-                                }
-
-                            </div>
-                        </div>
-
-                        <div className={`${styles.normalFlex} justify-between`}>
-                            <div className={`${styles.normalFlex}`}>
-                                <input type="checkbox" name="remember-me" id="remember-me" required
-                                classname="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded " />
-
-                                <label htmlFor="remember-me" className='ml-2 block text-sm text-gray-500'>Remember me</label>
-
-                            </div>
-                            
-                           
-                            <div className="text-sm">
-                                <a
+                        <div className="text-sm">
+                            <a
                                 href=".forgot-password"
-                                className="font-medium text-blue-600 hover:text-blue-500"
-                                >
-                                Forgot your password?
-                                </a>
-                            </div>
-
+                                className="font-medium text-green-700 hover:text-green-800 hover:underline"
+                            >
+                                Forgot password?
+                            </a>
                         </div>
+                    </div>
 
-                        <div>
-                            <button type='submit' className='group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md
-                            text-white bg-blue-600 hover:bg-blue-700'> 
-                                Submit
-                            </button>
-                        </div>
+                    <button 
+                        type='submit' 
+                        className='w-full py-3 px-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg'
+                    >
+                        Grow Your Network
+                    </button>
 
-                        <div className={`${styles.normalFlex} w-full`}>
-                            <h4>Not have any account?</h4>
-                            <Link to="/sign-up" className="text-blue-600 pl-2">
-                                Sign Up
-                            </Link>
-                        </div>
-
-
-
-                    </form>
-
-                </div>
-
+                    <p className='text-center text-sm text-green-600'>
+                        New to our platform?{' '}
+                        <Link 
+                            to="/sign-up" 
+                            className='font-semibold text-green-700 hover:text-green-800 hover:underline'
+                        >
+                            Cultivate your account
+                        </Link>
+                    </p>
+                </form>
             </div>
-
-
-
-
         </div>
-
-
     </div>
+</div>
   )
 }
 

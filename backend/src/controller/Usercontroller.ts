@@ -216,9 +216,11 @@ userRouter.get('/getuser', isAuthenticated, catchAsync(async (req: Request, res:
 // LOGOUT USER
 userRouter.get('/logout', isAuthenticated, catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.cookie('token', null, {
-            expires: new Date(Date.now()),
+        res.cookie('us_tk', null, {
+            expires: new Date(0), // Expire the cookie
             httpOnly: true,
+            sameSite: 'none', // Required for cross-site cookies
+            secure: true, // Required if using HTTPS
         });
         res.status(200).json({
             success: true,

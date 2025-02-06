@@ -21,7 +21,7 @@ const sideBarMenuConfig = [
   { id: 8, title: 'Log out', icon: AiOutlineLogout, isLogout: true },
 ];
 
-const ProfileSidebar = ({ active, setActive }) => {
+const ProfileSidebar = ({ active, setActive, setOpen  }) => {
   const navigate = useNavigate();
 
   // Logout Handler
@@ -59,11 +59,11 @@ const ProfileSidebar = ({ active, setActive }) => {
           <div
             key={menu.id}
             className="flex items-center cursor-pointer w-full mb-6"
-            onClick={() => handleClick(menu, index + 1)}
+            onClick={() => handleClick(menu, index + 1) || setOpen(false)}
           >
             {/* Icon with dynamic color based on active state */}
             <Icon size={30} color={isActive ? 'red' : ''} title={menu.title}/>
-            <span className={`pl-3 ${isActive ? 'text-red-500' : ''} 800px:block hidden `} >
+            <span className={`pl-3 ${isActive ? 'text-red-500' : ''} 800px:block `} >
               {menu.title}
             </span>
           </div>

@@ -6,7 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {LoginPage, SignupPage, VerifyemailPage, Homepage, ProductPage, BestSellingPage, EventsPage, 
   FAQPage, ProductDetailsPage, ProfilePage, StoreCreatePage, StoreVerifyemailPage, LoginStorePage  } from './Routes.jsx'
 
-import { loadStore, loadUser } from './redux/actions/user.js';
+import { loadUser } from './redux/actions/user.js';
+import { loadStore } from './redux/actions/store.jsx';
 import { useDispatch, useSelector } from 'react-redux'
 import ProtectedRoutes from './ProtectedRoutes.jsx';
 import SellerProtectedRoutes from './SellerProtectedRoute.jsx'
@@ -24,13 +25,18 @@ const App = () => {
     // Check if the token exists in the cookies (or wherever it's stored)
     // if(!isAuthenticated) {
     //   // If the user is authenticated, load their user data
-     
+    
     // }
     if(!isAuthenticated) {
       dispatch(loadUser())
       // we will have to create protected route for the Store as we do to the user(that only if the seller is authenticated he can access the store homepage)
     }
-    dispatch(loadStore())
+    if(!isStoreAuthenticated) {
+      dispatch(loadStore())
+    }
+  
+
+   
     
     
     
