@@ -5,15 +5,15 @@ import { useSelector } from 'react-redux'
 
 const StoreCreatePage = () => {
 
-    const { isStoreAuthenticated, store } = useSelector((state) => state.store)
+    const { isStoreAuthenticated, isLoading } = useSelector((state) => state.store)
     const navigate = useNavigate()
   
     useEffect(() => {
       if(isStoreAuthenticated === true) {
         // Redirect to home page if user is already authenticated
-        navigate(`/store/${store._id}`)
+        navigate(`/dashboard`)
       }
-    }, [])
+    }, [isLoading, isStoreAuthenticated])
 
   return (
     <div>

@@ -15,7 +15,7 @@ const isStoreAuthenticated = catchAsync( async (req: Request, res: Response, nex
     const {strs_tk} = req.cookies;
     if(!strs_tk)
     {
-        return next(createAuthError("User not authenticated, Please login to continue."));
+        return next(createAuthError("Store not authenticated, Please login to continue."));
     }
     try{
         const decoded = jwt.verify(strs_tk as string, process.env.JWT_SECRET as string) as JwtPayloadWithId;
@@ -24,7 +24,7 @@ const isStoreAuthenticated = catchAsync( async (req: Request, res: Response, nex
         const store: IStore | null = await Store.findById(decoded.id);
         // after Geting the user data associated with the token
         if (!store) {
-            return next(createAuthError("User not found"));
+            return next(createAuthError("Store not found"));
         }
         req.store = store;// No need to cast `req.user`, the type is now inferred in src > types > express.d.ts (i no know about this problem i will look into it later)
 

@@ -16,7 +16,8 @@ export const storeReducer = createReducer(initialState, (builder) => {
     })
     .addCase('LoadStoreSuccess', (state, action) => {
         state.isStoreAuthenticated = true;
-        state.isLoading = false;
+        state.isLoading = false; // when the load store request is successful, after the seller logs in or sign in token gets added to the cookie
+        //the loadstore() in store actions runs to get the user data saved it in the redux state THEN THIS (isLoading becomes false) meaning while its in the process isLoading becomes true
         state.store = action.payload;
     })
     .addCase('LoadStoreFail', (state, action) => {

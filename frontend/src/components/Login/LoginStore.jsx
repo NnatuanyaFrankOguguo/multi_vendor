@@ -22,8 +22,7 @@ const LoginStore = () => {
             const response = await axios.post(`${server}/api/v2/stores/login-store`, {email, password}, {withCredentials: true})//with credentials the cookies can be sent to the frontend from the backend
             toast.success("Login Success!")
             //console.log(response)
-            // localStorage.setItem('token', response.data.token)
-            //navigate('/shop') with the store login no need to do a navigate to take the seller to the shop we will do it on the frontend (to call our loadStore() action so that we on load if its the store/seller token it takes them to the to shop page)
+            navigate('/dashboard') //with the store login no need to do a navigate to take the seller to the shop we will do it on the frontend (to call our loadStore() action so that we on load if its the store/seller token it takes them to the to shop page)
             window.location.reload(true)
         } catch (error) {
             toast.error(error.response.data.message)
