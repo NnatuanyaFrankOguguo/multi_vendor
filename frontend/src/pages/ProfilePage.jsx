@@ -27,7 +27,7 @@ const ProfilePage = () => {
         {/* Sidebar */}
         <div className={`w-full md:w-[335px] fixed md:relative bottom-0 left-0 transform transition-transform duration-300 shadow-md rounded-md
           ${open ? 'translate-y-0' : 'translate-y-full md:translate-y-0'} 
-          md:block bg-[#D8F3FF] z-40 h-[calc(100vh - 160px)] md:h-auto overflow-y-auto`}
+          md:block bg-[#D8F3FF] z-10 h-[calc(100vh - 160px)] md:h-auto overflow-y-auto`}
           style={{ 
             msOverflowStyle: "none",  // For Internet Explorer and Edge
             scrollbarWidth: "none"     // For Firefox
