@@ -174,7 +174,7 @@ const Header = ({activeHeading}) => { //receiving the activeHeading from the Hom
                             {
                                 isAuthenticated ? (
                                     <Link to={`/profile`} className='flex items-center gap-1  justify-center '>
-                                        <img src={user.googleId ? user.avatar : `${server}${user.avatar.replace(/\\/g, '/')}`} className="w-[40px] h-[40px] rounded-full"  alt="" /> 
+                                        <img src={user.googleId ? user.avatar : `${server}${user.avatar}`} className="w-[40px] h-[40px] rounded-full"  alt="" /> 
                                         <span className='font-bold'> {user ? (initials(user.fname,user.lname)) : ""} <FiChevronDown size={20} className='text-gray-900' /></span>
                                     </Link> 
 
