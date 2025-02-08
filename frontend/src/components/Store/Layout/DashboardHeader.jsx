@@ -21,23 +21,23 @@ const DashboardHeader = () => {
 
       <div className="flex items-center">
         <div className="flex items-center mr-4"> 
-          <Link to="/dashboard-coupons">
+          <Link to="/dashboard-coupons" className='800px:block hidden'>
             <AiOutlineGift color='#8B4513' size={30} className='mx-5 cursor-pointer' title='Coupons' />
           </Link>
           
-          <Link to="/dashboard-events">
+          <Link to="/dashboard-events" className='800px:block hidden'>
             <MdOutlineLocalOffer color='#8B4513' size={30} className='mx-5 cursor-pointer' title='Events' />
           </Link>
 
-          <Link to="/dashboard-product">
+          <Link to="/dashboard-product" className='800px:block hidden'>
             <FiShoppingBag color='#8B4513' size={30} className='mx-5 cursor-pointer' title='Products' />
           </Link>
 
-          <Link to="/dashboard-order">
+          <Link to="/dashboard-order" className='800px:block hidden'>
             <FiPackage color='#8B4513' size={30} className='mx-5 cursor-pointer' title='Orders' />
           </Link>
 
-          <Link to="/dashboard-messages">
+          <Link to="/dashboard-messages" className='800px:block hidden'>
             <BiMessageSquareDetail color='#8B4513' size={30} className='mx-5 cursor-pointer' title='Messages' />
           </Link>
           

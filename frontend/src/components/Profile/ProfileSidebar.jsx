@@ -51,7 +51,7 @@ const ProfileSidebar = ({ active, setActive, setOpen  }) => {
 
   return (
     <div className="w-full bg-[#D8F3FF] shadow-sm rounded-[10px] p-4 pt-8">
-      {sideBarMenuConfig.map((menu, index) => {
+      {sideBarMenuConfig && sideBarMenuConfig.map((menu, index) => {
         const isActive = active === index + 1; // Match the `active` state with index+1
         const Icon = menu.icon; // Get the icon component dynamically
 

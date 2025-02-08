@@ -51,7 +51,7 @@ const ProfileContent = ({active}) => {
                 <>
                     <div className='flex justify-center w-full'>
                         <div className="relative">
-                            <img src={user.googleId ? user.avatar : `${server}/images/${user.avatar}`} className="w-[125px] h-[100px] rounded-full object-cover border-[3px] border-[#3ad132]"  alt="profile" /> 
+                            <img src={user.googleId ? user.avatar : `${server}${user.avatar}`} className="w-[125px] h-[100px] rounded-full object-cover border-[3px] border-[#3ad132]"  alt="profile" /> 
                             <div className=' absolute border w-[25px] h-[25px] bg-[#3ad132] rounded-full flex items-center justify-center cursor-pointer bottom-[5px] right-[5px]'>
                                 <AiOutlineCamera />
                             </div>
