@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom'
 import { BiMessageAltDetail } from 'react-icons/bi';
 import {AiOutlineGift } from 'react-icons/ai';
 import { HiOutlineReceiptRefund } from "react-icons/hi";
+import { LuTrendingUp } from "react-icons/lu";
+
 
 const DashboardSidebar = ({active, setOpen}) => {
 
@@ -37,7 +39,7 @@ const DashboardSidebar = ({active, setOpen}) => {
                 //{id: 34, link: '/dashboard-event-edit', name: 'Edit Event', icon: FiPackage },    
             ]
         },
-        {id: 8, link: '/dashboard-promotion', name: 'Promotions', icon: VscNewFile },
+        {id: 8, link: '/dashboard-promotion', name: 'Promotions', icon: LuTrendingUp },
         {id: 9, link: '/dashboard-withdraw-money', name: 'Withdraw Money', icon: CiMoneyBill },
         {id: 10, link: '/dashboard-messages', name: 'Shop Inbox', icon: BiMessageAltDetail },
         {id: 11, link: '/dashboard-coupons', name: 'Discount Codes', icon: AiOutlineGift },
@@ -63,9 +65,7 @@ const DashboardSidebar = ({active, setOpen}) => {
 
                 return(
                     <div key={index} className='w-full'>
-                        <div className="flex w-full items-center justify-between p-4 hover:bg-[#F5E1A4]"  onClick={() => menuItem.subMenu && toggleDropdown(menuItem.id)
-                           
-                        }>
+                        <div className="flex w-full items-center justify-between p-4 hover:bg-[#F5E1A4]"  onClick={() => menuItem.subMenu && toggleDropdown(menuItem.id) || setOpen(false)}>
                             <Link to={menuItem.link || '#'} className='w-full flex items-center'>
                                 <Icon size={30} color={`${active === menuItem.id ? '#8B4513' : ''}`} title={menuItem.name} />
                                 <h5 className={`pl-2 text-[16px] font-[500] flex w-full ${active === menuItem.id? 'text-[#8B4513]' : 'text-[#555]'}`}>
