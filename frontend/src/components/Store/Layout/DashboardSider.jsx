@@ -11,7 +11,7 @@ import { HiOutlineReceiptRefund } from "react-icons/hi";
 import { LuTrendingUp } from "react-icons/lu";
 
 
-const DashboardSidebar = ({active, setOpen}) => {
+const DashboardSidebar = ({active, setOpen, subActive}) => {
 
     const [ openDropDown, setOpenDropDown ] = useState({})
 
@@ -28,7 +28,7 @@ const DashboardSidebar = ({active, setOpen}) => {
         {id: 32, name: 'All Products', icon: FiPackage,
             subMenu: [
                 {id: 4, link: '/dashboard-products', name: 'Manage Products' },
-                {id: 5, link: '/dashboard-product-create', name: 'Create Product' },
+                {id: 5, link: '/dashboard-create-product', name: 'Create Product' },
                 //{id: 33, link: '/dashboard-product-edit', name: 'Edit Product', icon: FiPackage },    
             ]
         },
@@ -61,11 +61,18 @@ const DashboardSidebar = ({active, setOpen}) => {
         {
             dashboardItems.map((menuItem,index) => {
                 const Icon = menuItem.icon; // Get the icon component dynamically
-                const isOpen = openDropDown[menuItem.id] || false; //check if the dropdown is open for this menu item
+                 // For menu items with a subMenu, check if either the active prop matches
+                // the menu item's id OR if it's been toggled open.
+                const isOpen = menuItem.subMenu ? (active === menuItem.id || openDropDown[menuItem.id]) : false
 
                 return(
                     <div key={index} className='w-full'>
-                        <div className="flex w-full items-center justify-between p-4 hover:bg-[#F5E1A4]"  onClick={() => menuItem.subMenu && toggleDropdown(menuItem.id) || setOpen(false)}>
+                        <div className="flex w-full items-center justify-between p-4 hover:bg-[#F5E1A4]"  onClick={() => {
+                            if (active !== menuItem.id) {
+                                // Only toggle the dropdown if this menu item isn't the active one.
+                                toggleDropdown(menuItem.id);
+                            }
+                        }}>
                             <Link to={menuItem.link || '#'} className='w-full flex items-center'>
                                 <Icon size={30} color={`${active === menuItem.id ? '#8B4513' : ''}`} title={menuItem.name} />
                                 <h5 className={`pl-2 text-[16px] font-[500] flex w-full ${active === menuItem.id? 'text-[#8B4513]' : 'text-[#555]'}`}>
@@ -81,7 +88,7 @@ const DashboardSidebar = ({active, setOpen}) => {
                                 {
                                     menuItem.subMenu && menuItem.subMenu.map((subMenu, index) => {
                                         return(
-                                            <Link key={index} to={subMenu.link || '#'} className={`px-4 py-2 hover:bg-[#F5E1A4] rounded-md block text-[16px] font-[500] ${active === subMenu.id? 'text-[#8B4513]' : 'text-[#555]'}`}>
+                                            <Link key={index} to={subMenu.link || '#'} className={`px-4 py-2 hover:bg-[#F5E1A4] rounded-md block text-[16px] font-[500] ${subActive === subMenu.id? 'text-[#8B4513]' : 'text-[#555]'}`}>
  
                                                 {subMenu.name} 
                                                 

@@ -53,7 +53,7 @@ const ShopInfo = ({isOwner}) => {
         {
             isOwner && (
                 <div className='flex gap-3'>
-                    <button className={`${styles.button} text-white py-2 px-4 rounded`}>Edit Profile</button>
+                    <button className={`${styles.button}  text-white py-2 px-4 rounded`}>Edit Profile</button>
                     <button className={`${styles.button}  text-white py-2 px-4 rounded`} onClick={LogoutHandler}>Log Out</button>
                 </div>
             )

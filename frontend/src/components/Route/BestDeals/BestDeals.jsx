@@ -19,7 +19,7 @@ const BestDeals = () => {
 
   return (
     <div>
-        <div className={`${styles.section}`}>
+        <div className={`${styles.section} px-3 md:px-0`}>
             <div className={`${styles.heading}`}>
                 <h1 className='text-2xl font-bold'>Best Deals</h1>
             </div>
