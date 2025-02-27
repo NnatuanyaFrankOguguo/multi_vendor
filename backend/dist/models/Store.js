@@ -86,40 +86,10 @@ const storeSchema = new mongoose.Schema({
         type: [String],
         default: [], // e.g., ["USDA Organic", "Fair Trade"]
     },
-    rating: {
-        type: Number,
-        default: 0,
-        min: [0, "Rating cannot be negative"],
-        max: [5, "Rating cannot be more than 5"]
-    },
-    reviews: [
-        {
-            user: {
-                type: Schema.Types.ObjectId,
-                ref: 'User',
-                required: true
-            },
-            rating: {
-                type: Number,
-                required: true,
-                min: [1, "Rating cannot be negative"],
-                max: [5, "Rating cannot be more than 5"]
-            },
-            comment: {
-                type: String,
-                required: true,
-                minlength: 10
-            },
-            images: [String], // URLs of review images
-            createdAt: {
-                type: Date,
-                default: Date.now
-            },
-            updatedAt: {
-                type: Date,
-            },
-        },
-    ],
+    reviews: [{
+            type: Schema.Types.ObjectId,
+            ref: "Review"
+        }],
     totalRatings: {
         type: Number,
         default: 0,
