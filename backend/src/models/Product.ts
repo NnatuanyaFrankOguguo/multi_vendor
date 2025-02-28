@@ -11,7 +11,7 @@ export interface IProduct extends Document {
     unit?: string;
     stock: number;
     highlight?: string;
-    store: Types.ObjectId; // Reference to Store model
+    store?: Types.ObjectId; // Reference to Store model
     storeId: string; // Reference to specific Store
     harvestDate?: Date;
     expirationDate?: Date;
@@ -29,8 +29,10 @@ export interface IProduct extends Document {
     minOrderQuantity: number;
     isAvailable?: boolean;
     isApproved?: boolean;
-    discount?: { percentage: number; expiresAt: Date };
-    rating: number;
+    //discount?: { percentage: number; expiresAt: Date };
+    rating?: number; //Average rating from product Reviews then calculate it below and add here
+    discountPercentage?: number;
+    discountExpiresAt: Date;
     
 
 }
@@ -140,21 +142,66 @@ const productSchema: Schema<IProduct> = new mongoose.Schema({
         type: Boolean,
         default: false // For admin approval
     },
-    discount: {
-        percentage: Number,
-        expiresAt: Date,
-    },
     rating: {
         type: Number,
         default: 0,
         min: 0,
         max: 5,
-      },
+    },
+    discountPercentage: {
+        type: Number
+    }, 
+    discountExpiresAt: { type: Date, required: false }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 })
+
+// Method to update average rating
+productSchema.statics.updateAverageRating = async function (productId) {
+    const reviews = await mongoose.model("Review").find({product : productId})
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+
+    await this.findByIdAndUpdate(productId, {rating: averageRating});
+
+}
+
+// Method to update discount percentage
+productSchema.statics.calculateDiscountPercentage = async function (productId) {
+    const product = await this.findById(productId);
+    if (product?.originalPrice && product?.discountPrice) {
+        product.discountPercentage = Math.round(
+            ((product.originalPrice - product.discountPrice) / product.originalPrice) * 100
+        );
+        await product.save();
+        return product.discountPercentage;
+    }
+    return 0;
+};
+
+productSchema.statics.expireDiscounts = async function () {
+    const now = new Date();
+    await this.updateMany(
+        { discountExpiresAt: {$lte: now} }, // Find expired discounts
+        {
+            $set: {discountPrice: "$originalPrice", discountPercentage: 0, discountExpiresAt: null},  // Reset fields
+        }
+        
+    )
+}
+
+//ensuring expired product are unavailable 
+// though has a concern in the sense the time of delivery too and when they want to consumed but will be looked into later
+
+// productSchema.statics.expireProducts = async function () {
+//     const now = new Date();
+//     await this.updateMany(
+//         { expirationDate: { $lte: now } },
+//         { $set: { isAvailable: false } }
+//     );
+// };
 
 const Product = mongoose.model<IProduct>("Product", productSchema);
 export default Product;

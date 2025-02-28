@@ -1,0 +1,44 @@
+import express from "express";
+import Product from "../models/Product.js";
+import { upload } from "../multer.js";
+import { catchAsync } from "../middleware/catchAsync.js";
+import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
+import Store from "../models/Store.js";
+const productRouter = express.Router();
+//create a new product
+productRouter.post('/create-product', upload.array("images"), catchAsync(async (req, res, next) => {
+    // TODO: Validate and sanitize inputs
+    try {
+        // we will find the store by id first... to be able to indicate where the product will be stored in the database
+        const storeId = req.body.storeId;
+        const store = await Store.findById(storeId);
+        if (store) {
+            // Validate images
+            const files = req.files;
+            if (!files || files.length === 0) {
+                return next(createvalidateError("At least one image is required"));
+            } //bcos the incoming image from the frontend is multiple images which will be stored as an array
+            //we will now iterate through each image stored in the files
+            const imageUrls = files.map((file) => `/images/${file.filename}`); //This ensures imageUrls is never undefined and avoids unnecessary error handling.
+            // Create product
+            const productData = {
+                ...req.body,
+                images: imageUrls,
+                store: storeId, // Ensure `store` is an ObjectId reference
+            };
+            const product = await Product.create(productData);
+            res.status(201).json({
+                success: true,
+                product,
+                message: 'Product created successfully'
+            });
+        }
+        else {
+            return next(createvalidateError("Store ID is invalid!"));
+        }
+    }
+    catch (error) {
+        return next(createDataBaseError("An error occurred while creating a product"));
+    }
+}));
+export default productRouter;
