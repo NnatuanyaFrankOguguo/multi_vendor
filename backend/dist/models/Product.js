@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Product description is required'],
     },
-    highlight: {
+    highlights: {
         type: String,
         required: false,
     },
@@ -19,12 +19,11 @@ const productSchema = new mongoose.Schema({
         required: [true, 'Product category is required'],
     },
     discountPrice: {
-        type: Number,
-        required: [true, 'Product\' real price is required'],
+        type: Number
     },
     originalPrice: {
         type: Number,
-        required: false,
+        required: [true, 'Product\'s real price is required'],
     },
     unit: {
         type: String,
@@ -43,11 +42,11 @@ const productSchema = new mongoose.Schema({
             message: "Product images cannot exceed 5"
         }
     },
-    storeId: {
-        type: String,
-        required: true
-    },
-    store: {
+    // storeId: {
+    //     type: String,
+    //     required: true
+    // },
+    storeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Store',
         required: true
@@ -80,7 +79,6 @@ const productSchema = new mongoose.Schema({
     },
     minOrderQuantity: {
         type: Number,
-        required: [true, 'Product minimum order quantity is required'],
         default: 1
     },
     availableForBulk: {
@@ -110,7 +108,8 @@ const productSchema = new mongoose.Schema({
         max: 5,
     },
     discountPercentage: {
-        type: Number
+        type: Number,
+        default: 0
     },
     discountExpiresAt: { type: Date, required: false }
 }, {
@@ -118,30 +117,40 @@ const productSchema = new mongoose.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
-// Method to update average rating
-productSchema.statics.updateAverageRating = async function (productId) {
-    const reviews = await mongoose.model("Review").find({ product: productId });
-    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-    const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
-    await this.findByIdAndUpdate(productId, { rating: averageRating });
-};
-// Method to update discount percentage
-productSchema.statics.calculateDiscountPercentage = async function (productId) {
-    const product = await this.findById(productId);
-    if (product?.originalPrice && product?.discountPrice) {
-        product.discountPercentage = Math.round(((product.originalPrice - product.discountPrice) / product.originalPrice) * 100);
-        await product.save();
-        return product.discountPercentage;
-    }
-    return 0;
-};
-productSchema.statics.expireDiscounts = async function () {
+productSchema.pre("save", async function (next) {
+    // Ensure `this` is the product document
+    const product = this;
     const now = new Date();
-    await this.updateMany({ discountExpiresAt: { $lte: now } }, // Find expired discounts
-    {
-        $set: { discountPrice: "$originalPrice", discountPercentage: 0, discountExpiresAt: null }, // Reset fields
-    });
-};
+    // 1️⃣ Calculate Discount Percentage Before Saving
+    if (product.originalPrice && product.discountPrice) {
+        product.discountPercentage = Math.round(((product.originalPrice - product.discountPrice) / product.originalPrice) * 100);
+    }
+    else {
+        product.discountPercentage = 0;
+    }
+    // 2️⃣ Update Average Rating Before Saving
+    if (product.isModified("reviews")) { // Only update if `reviews` array changes
+        const reviews = await mongoose.model("Review").find({ product: product._id });
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        product.rating = reviews.length > 0 ? totalRating / reviews.length : 0;
+    }
+    // 3️⃣ Reset Expired Discounts Before Saving
+    if (product.discountExpiresAt && product.discountExpiresAt <= now) {
+        product.discountPrice = undefined; // Reset discount
+        product.discountPercentage = 0;
+        product.discountExpiresAt = undefined; // Remove expiration date
+    }
+    next(); // Move to the next middleware
+});
+// productSchema.statics.expireDiscounts = async function () {
+//     const now = new Date();
+//     await this.updateMany(
+//         { discountExpiresAt: {$lte: now} }, // Find expired discounts
+//         {
+//             $set: {discountPrice: "$originalPrice", discountPercentage: 0, discountExpiresAt: null},  // Reset fields
+//         }
+//     )
+// }
 //ensuring expired product are unavailable 
 // though has a concern in the sense the time of delivery too and when they want to consumed but will be looked into later
 // productSchema.statics.expireProducts = async function () {
@@ -151,5 +160,5 @@ productSchema.statics.expireDiscounts = async function () {
 //         { $set: { isAvailable: false } }
 //     );
 // };
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("products", productSchema);
 export default Product;

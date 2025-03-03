@@ -5,14 +5,13 @@ export interface IProduct extends Document {
     name: string;
     description: string;
     category: string; //Enables filtering/sorting
-    discountPrice: number;
-    originalPrice?: number;
+    discountPrice?: number;
+    originalPrice: number;
     // currency: string;
     unit?: string;
     stock: number;
-    highlight?: string;
-    store?: Types.ObjectId; // Reference to Store model
-    storeId: string; // Reference to specific Store
+    highlights?: string;
+    storeInfo: Types.ObjectId; // Reference to Store model
     harvestDate?: Date;
     expirationDate?: Date;
     organicCertified: boolean;
@@ -26,13 +25,13 @@ export interface IProduct extends Document {
     shippingWeight: number;
     availableForBulk?: boolean;
     tags?: string[]; //Improved searchability
-    minOrderQuantity: number;
+    minOrderQuantity?: number;
     isAvailable?: boolean;
     isApproved?: boolean;
     //discount?: { percentage: number; expiresAt: Date };
     rating?: number; //Average rating from product Reviews then calculate it below and add here
     discountPercentage?: number;
-    discountExpiresAt: Date;
+    discountExpiresAt?: Date;
     
 
 }
@@ -49,7 +48,7 @@ const productSchema: Schema<IProduct> = new mongoose.Schema({
         type: String,
         required: [true, 'Product description is required'],
     },
-    highlight: {
+    highlights: {
         type: String,
         required: false,
     },
@@ -58,12 +57,11 @@ const productSchema: Schema<IProduct> = new mongoose.Schema({
         required: [true, 'Product category is required'],
     },
     discountPrice: {
-        type: Number,
-        required: [true, 'Product\' real price is required'],
+        type: Number
     },
     originalPrice: {
         type: Number,
-        required: false,
+        required: [true, 'Product\'s real price is required'],
     },
     unit: {
         type: String,
@@ -82,11 +80,7 @@ const productSchema: Schema<IProduct> = new mongoose.Schema({
             message: "Product images cannot exceed 5"
         }
     },
-    storeId: {
-        type: String,
-        required: true
-    },
-    store: {
+    storeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Store',
         required: true
@@ -119,7 +113,6 @@ const productSchema: Schema<IProduct> = new mongoose.Schema({
     },
     minOrderQuantity: {
         type: Number,
-        required: [true, 'Product minimum order quantity is required'],
         default: 1
     },
     availableForBulk: {
@@ -149,7 +142,8 @@ const productSchema: Schema<IProduct> = new mongoose.Schema({
         max: 5,
     },
     discountPercentage: {
-        type: Number
+        type: Number,
+        default: 0
     }, 
     discountExpiresAt: { type: Date, required: false }
 }, {
@@ -158,39 +152,51 @@ const productSchema: Schema<IProduct> = new mongoose.Schema({
     toObject: { virtuals: true }
 })
 
-// Method to update average rating
-productSchema.statics.updateAverageRating = async function (productId) {
-    const reviews = await mongoose.model("Review").find({product : productId})
-    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-    const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+productSchema.pre("save", async function (next) {
+    // Ensure `this` is the product document
+    const product = this as IProduct;
 
-    await this.findByIdAndUpdate(productId, {rating: averageRating});
+    const now = new Date();
 
-}
-
-// Method to update discount percentage
-productSchema.statics.calculateDiscountPercentage = async function (productId) {
-    const product = await this.findById(productId);
-    if (product?.originalPrice && product?.discountPrice) {
+    // 1️⃣ Calculate Discount Percentage Before Saving
+    if (product.originalPrice && product.discountPrice) {
         product.discountPercentage = Math.round(
             ((product.originalPrice - product.discountPrice) / product.originalPrice) * 100
         );
-        await product.save();
-        return product.discountPercentage;
+    } else {
+        product.discountPercentage = 0;
     }
-    return 0;
-};
 
-productSchema.statics.expireDiscounts = async function () {
-    const now = new Date();
-    await this.updateMany(
-        { discountExpiresAt: {$lte: now} }, // Find expired discounts
-        {
-            $set: {discountPrice: "$originalPrice", discountPercentage: 0, discountExpiresAt: null},  // Reset fields
-        }
+    // 2️⃣ Update Average Rating Before Saving
+    if (product.isModified("reviews")) { // Only update if `reviews` array changes
+        const reviews = await mongoose.model("Review").find({ product: product._id });
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        product.rating = reviews.length > 0 ? totalRating / reviews.length : 0;
+    }
+
+
+    // 3️⃣ Reset Expired Discounts Before Saving
+    if (product.discountExpiresAt && product.discountExpiresAt <= now) {
+        product.discountPrice = undefined; // Reset discount
+        product.discountPercentage = 0;
+        product.discountExpiresAt = undefined; // Remove expiration date
+    }
+
+
+    next(); // Move to the next middleware
+});
+
+
+// productSchema.statics.expireDiscounts = async function () {
+//     const now = new Date();
+//     await this.updateMany(
+//         { discountExpiresAt: {$lte: now} }, // Find expired discounts
+//         {
+//             $set: {discountPrice: "$originalPrice", discountPercentage: 0, discountExpiresAt: null},  // Reset fields
+//         }
         
-    )
-}
+//     )
+// }
 
 //ensuring expired product are unavailable 
 // though has a concern in the sense the time of delivery too and when they want to consumed but will be looked into later
@@ -203,5 +209,5 @@ productSchema.statics.expireDiscounts = async function () {
 //     );
 // };
 
-const Product = mongoose.model<IProduct>("Product", productSchema);
+const Product = mongoose.model<IProduct>("products", productSchema);
 export default Product;

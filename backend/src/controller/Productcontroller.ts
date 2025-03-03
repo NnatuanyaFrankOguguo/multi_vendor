@@ -19,21 +19,17 @@ productRouter.post('/create-product', upload.array("images"), catchAsync(async (
         const store = await Store.findById(storeId);
         if(store){
             // Validate images
-            const files = req.files as Express.Multer.File[];
-            if (!files || files.length === 0) {
-              return next(createvalidateError("At least one image is required"));
-            } //bcos the incoming image from the frontend is multiple images which will be stored as an array
+            const files = req.files;  // Files might be undefined
+            //bcos the incoming image from the frontend is multiple images which will be stored as an array
             //we will now iterate through each image stored in the files
-            const imageUrls = files.map((file) => `/images/${file.filename}`); //This ensures imageUrls is never undefined and avoids unnecessary error handling.
+            const imageUrls = Array.isArray(files) ? files.map((file) => `/images/${file.filename}`) : []; //This ensures imageUrls is never undefined and avoids unnecessary error handling.
+
+            const productData = req.body;
+            productData.images = imageUrls;
+            productData.storeInfo = store;
 
 
             // Create product
-            const productData = {
-                ...req.body,
-                images: imageUrls,
-                store: storeId, // Ensure `store` is an ObjectId reference
-            };
-
             const product = await Product.create(productData);
 
             res.status(201).json({

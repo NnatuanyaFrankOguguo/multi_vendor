@@ -6,7 +6,7 @@ import styles from '../../styles/styles'
 const ShopInfo = ({isOwner}) => {
 
     const { store } = useSelector((state) => state.store)
-    console.log(store)
+    
 
     const LogoutHandler = () => {
         console.log('logout')

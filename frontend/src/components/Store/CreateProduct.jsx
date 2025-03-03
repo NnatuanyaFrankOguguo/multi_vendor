@@ -1,4 +1,4 @@
-import  React, { useState } from "react";
+import  React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";  // Import Quill Editor
@@ -6,8 +6,29 @@ import "react-quill/dist/quill.snow.css";  // Import Quill styles
 import { categoriesData } from "../../static/data";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { MdClose } from "react-icons/md"; // Importing delete icon
+import { createProduct } from "../../redux/actions/product";
+import { toast } from "react-toastify";
 
 const CreateProduct = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { store } = useSelector((state) => state.store);
+  
+
+  const { success, error } = useSelector((state) => state.product); //recieving the data we got from the product state after creating a new product in the server database whether successful or not
+
+  useEffect(() => {
+    if(error) {
+      toast.error(error);
+    }
+    else if(success) {
+      toast.success("Product created successfully!");
+      navigate("/dashboard"); //after creating a new product, navigate to the dashboard all product page we dont have it yet we will create it later
+    }
+  }, [dispatch, error, success]); // when new dispatch will happen..asin a new product is created, useEffect will run again
+
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -19,11 +40,12 @@ const CreateProduct = () => {
   const [highlights, setHighlights] = useState("");
   const [weight, setWeight] = useState("");
 
+
   const handleHighlightsChange = (value) => {
     setHighlights(value);
   };
 
-
+  // add new image to the images array when the add icon is clicked
   const handleImageChange = (e) => {
     e.preventDefault();
     
@@ -31,13 +53,37 @@ const CreateProduct = () => {
     setImages((prevImages) => [...prevImages, ...files]);
   };
 
+  //remove an image from the images array when the delete icon is clicked
   const removeImage = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Product submitted");
+
+    const newForm = new FormData();
+
+    //breaking the images array into an object to add each one to the form data
+    images.forEach((image) => newForm.append('images', image));
+
+    newForm.append('name', name);
+    newForm.append('description', description);
+    newForm.append('category', category);
+    newForm.append('tags', tags);
+    newForm.append('originalPrice', originalPrice);
+    newForm.append('discountPrice', discountPrice);
+    newForm.append('stock', stock);
+    newForm.append('highlights', highlights);
+    newForm.append('shippingWeight', weight);
+    newForm.append('storeId', store._id);
+
+    
+
+    dispatch(createProduct(newForm)); // meaning we are sending the new form data to the server via the createProduct action in the store actions file
+
+
   };
 
   return (
@@ -69,8 +115,8 @@ const CreateProduct = () => {
               </div>
               <div>
                 <label className='block text-gray-700'>Tags</label>
-                <input type='text' value={discountPrice} onChange={(e) => setTags(e.target.value)}
-                  className='mt-1 w-full border rounded-md px-3 py-2 focus:ring-yellow-500 focus:border-yellow-500' placeholder='Discount Price' />
+                <input type='text' value={tags} onChange={(e) => setTags(e.target.value)}
+                  className='mt-1 w-full border rounded-md px-3 py-2 focus:ring-yellow-500 focus:border-yellow-500' placeholder='product Key Features' />
               </div>
             </div>
 
