@@ -23,6 +23,28 @@ export const createProduct = (newForm) => async (dispatch) => {
     }
 }
 
+export const getAllProducts = (id) => async (dispatch) => {
+    try {
+        dispatch({
+            type: 'getAllProductStoreRequest'
+        })
+
+        const {data} = await axios.get(`${server}/api/v2/products/get-all-products-store/${id}`);
+        // after request is successful, then in the GET_ALL_PRODUCTS_SUCCESS action from product REDUCER, we will send the data
+        dispatch({
+            type: 'getAllProductStoreSuccess',
+            payload: data.products //we are sending the products array from the server to the  reducer
+        })
+
+    } catch (error) {
+        
+        dispatch({
+            type: 'getAllProductStoreFail',
+            payload: error.response?.data?.message || 'Error creating product' //if error occurs, then in the CREATE_PRODUCT_FAIL action from product REDUCER, we will send the error message
+        });
+    }
+}
+
 // in the product reducer, we will handle these actions
 // and return the new state based on the action type
 // actions > reducers > store.js

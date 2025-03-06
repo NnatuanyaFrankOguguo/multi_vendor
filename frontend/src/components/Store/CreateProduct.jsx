@@ -25,6 +25,7 @@ const CreateProduct = () => {
     else if(success) {
       toast.success("Product created successfully!");
       navigate("/dashboard"); //after creating a new product, navigate to the dashboard all product page we dont have it yet we will create it later
+      //windows.location.reload() // this is to make sure that after the user is logged out token that been cleared from cookie storage the page refreshes that if the user goes back to the homepage the
     }
   }, [dispatch, error, success]); // when new dispatch will happen..asin a new product is created, useEffect will run again
 

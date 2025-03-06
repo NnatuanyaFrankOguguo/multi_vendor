@@ -47,6 +47,20 @@ productRouter.post('/create-product', upload.array("images"), catchAsync(async (
     }
 }))
 
+productRouter.get('/get-all-products-store/:id', catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const products = await Product.find({storeInfo: req.params.id})
+
+        res.status(201).json({
+            success: true,
+            products,
+        })
+
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while fetching products"));  
+    }
+}))
+
 
 
 export default productRouter;

@@ -26,12 +26,32 @@ export const productReducer = createReducer(initialState, (builder) => {
             // when the product request fails, we set the error in the state and set isLoading to false
             state.success = false;
         })
+        
+        // get all products of store
+        .addCase('getAllProductStoreRequest', (state) => {
+            state.isLoading = true;
+            // we set isLoading to true when we request all products of a store
+        })
+        .addCase('getAllProductStoreSuccess', (state, action) => {
+            state.products = action.payload;
+            state.isLoading = false;
+            // when the request is successful, we load the products into the state and set isLoading to false
+            state.success = true;
+        })
+        .addCase('getAllProductStoreFail', (state, action) => {
+            state.error = action.payload;
+            state.isLoading = false;
+            // when the request fails, we set the error in the state and set isLoading to false
+            state.success = false;
+        })
         .addCase('ClearErrors', (state) => {
             state.error = null;
             state.success = false;
             // when we clear the errors, we reset the state
             state.isLoading = false;
         })
+
+    
 })
 
 // then we go to the product actions 

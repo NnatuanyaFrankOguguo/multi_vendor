@@ -27,7 +27,7 @@ const DashboardSidebar = ({active, setOpen, subActive}) => {
         {id: 2, link: '/dashboard-orders', name: 'All Orders', icon: FiShoppingBag },
         {id: 32, name: 'All Products', icon: FiPackage,
             subMenu: [
-                {id: 4, link: '/dashboard-products', name: 'Manage Products' },
+                {id: 4, link: '/dashboard-all-products', name: 'Manage Products' },
                 {id: 5, link: '/dashboard-create-product', name: 'Create Product' },
                 //{id: 33, link: '/dashboard-product-edit', name: 'Edit Product', icon: FiPackage },    
             ]
