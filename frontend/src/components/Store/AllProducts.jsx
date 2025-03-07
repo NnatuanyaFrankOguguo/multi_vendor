@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProducts } from '../../redux/actions/product';
+import { deleteProduct, getAllProducts } from '../../redux/actions/product';
 import { AiOutlineDelete, AiOutlineEye } from 'react-icons/ai';
 import Loader from '../Layout/Loader';
 import { DataGrid } from '@mui/x-data-grid';
@@ -18,6 +18,11 @@ const AllProducts = () => {
     useEffect(() => {
         dispatch( getAllProducts(store._id));
     }, [dispatch]);
+
+    const handleDelete = (id) => {
+        dispatch(deleteProduct(id));
+        window.location.reload(); //to refresh the page after deleting a product
+    }
 
     const columns = [
         {field : "id", headerName : "Product Id", minWidth: 150, flex: 0.7},
@@ -44,7 +49,7 @@ const AllProducts = () => {
             return (
                 <>
                 
-                    <Button>
+                    <Button onClick={() => handleDelete(params.id)}>
                         <AiOutlineDelete size={20} />
                     </Button>
                 

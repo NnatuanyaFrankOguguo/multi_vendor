@@ -2,14 +2,22 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import server from '../../server'
 import styles from '../../styles/styles'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const ShopInfo = ({isOwner}) => {
 
     const { store } = useSelector((state) => state.store)
     
 
-    const LogoutHandler = () => {
-        console.log('logout')
+    const LogoutHandler = async() => {
+        try {
+            const response = await axios.get(`${server}/api/v2/stores/logout`, { withCredentials: true });
+            toast.success(response.data.message);
+            window.location.reload(true); // Ensure token is cleared and the profile UI updates
+            } catch (error) {
+            toast.error(error.response.data.message);
+          }
     }
 
     //add the isVerified === true put a good mark on it

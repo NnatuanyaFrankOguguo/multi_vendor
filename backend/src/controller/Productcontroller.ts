@@ -5,6 +5,7 @@ import { catchAsync } from "../middleware/catchAsync.js";
 import {z} from 'zod'
 import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
 import Store, { IStore } from "../models/Store.js";
+import isStoreAuthenticated from "../middleware/storeauth.js";
 
 
 
@@ -61,6 +62,29 @@ productRouter.get('/get-all-products-store/:id', catchAsync(async (req: Request,
     }
 }))
 
+//delete product of a store
+productRouter.delete('/delete-product/:id', isStoreAuthenticated , catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const productId = req.params.id;
+
+        const product = await Product.findByIdAndDelete(productId)
+
+        if(!product){
+
+            return next(createvalidateError("Product ID is invalid!"))
+           
+        }
+        res.status(201).json({
+            success: true,
+            message: 'Product deleted successfully'
+        })
+        
+
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while deleting a product"));
+    }
+})
+)
 
 
 export default productRouter;

@@ -4,6 +4,7 @@ import { upload } from "../multer.js";
 import { catchAsync } from "../middleware/catchAsync.js";
 import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
 import Store from "../models/Store.js";
+import isStoreAuthenticated from "../middleware/storeauth.js";
 const productRouter = express.Router();
 //create a new product
 productRouter.post('/create-product', upload.array("images"), catchAsync(async (req, res, next) => {
@@ -47,6 +48,23 @@ productRouter.get('/get-all-products-store/:id', catchAsync(async (req, res, nex
     }
     catch (error) {
         return next(createDataBaseError("An error occurred while fetching products"));
+    }
+}));
+//delete product of a store
+productRouter.delete('/delete-product/:id', isStoreAuthenticated, catchAsync(async (req, res, next) => {
+    try {
+        const productId = req.params.id;
+        const product = await Product.findByIdAndDelete(productId);
+        if (!product) {
+            return next(createvalidateError("Product ID is invalid!"));
+        }
+        res.status(201).json({
+            success: true,
+            message: 'Product deleted successfully'
+        });
+    }
+    catch (error) {
+        return next(createDataBaseError("An error occurred while deleting a product"));
     }
 }));
 export default productRouter;

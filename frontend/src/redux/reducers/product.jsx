@@ -27,7 +27,7 @@ export const productReducer = createReducer(initialState, (builder) => {
             state.success = false;
         })
         
-        // get all products of store
+        // GET ALL PRODUCTS OF A STORE
         .addCase('getAllProductStoreRequest', (state) => {
             state.isLoading = true;
             // we set isLoading to true when we request all products of a store
@@ -39,6 +39,25 @@ export const productReducer = createReducer(initialState, (builder) => {
             state.success = true;
         })
         .addCase('getAllProductStoreFail', (state, action) => {
+            state.error = action.payload;
+            state.isLoading = false;
+            // when the request fails, we set the error in the state and set isLoading to false
+            state.success = false;
+        })
+        
+
+        // DELETE PRODUCT OF A STORE
+        .addCase('productDeleteRequest', (state) => {
+            state.isLoading = true;
+            // we set isLoading to true when we request to delete a product
+        })
+        .addCase('productDeleteSuccess', (state, action) => {
+            state.isLoading = false;
+            state.message = action.payload; // we set the message to display when the product is deleted
+            // when the request is successful, we set isLoading to false
+            state.success = true;
+        })
+        .addCase('productDeleteFail', (state, action) => {
             state.error = action.payload;
             state.isLoading = false;
             // when the request fails, we set the error in the state and set isLoading to false

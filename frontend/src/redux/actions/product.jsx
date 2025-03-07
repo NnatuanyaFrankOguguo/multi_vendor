@@ -45,6 +45,28 @@ export const getAllProducts = (id) => async (dispatch) => {
     }
 }
 
+//delete product 
+
+export const deleteProduct = (id) => async (dispatch) => {
+    try {
+        dispatch({
+            type: 'productDeleteRequest'
+        })
+
+        const { data } = await axios.delete(`${server}/api/v2/products/delete-product/${id}`, {withCredentials: true}); //withCredentials: true to send cookies to the server for authentication
+        // after request is successful, then in the DELETE_PRODUCT_SUCCESS action from product REDUCER, we will send the data
+        dispatch({
+            type: 'productDeleteSuccess',
+            payload: data.message //we are sending the product object from the server to the  reducer
+        })
+    } catch (error) {
+        dispatch({
+            type: 'productDeleteFail',
+            payload: error.response?.data?.message || 'Error deleting product' //if error occurs, then in the DELETE_PRODUCT_FAIL action from product REDUCER, we will send the error message
+        })
+    }
+}
+
 // in the product reducer, we will handle these actions
 // and return the new state based on the action type
 // actions > reducers > store.js

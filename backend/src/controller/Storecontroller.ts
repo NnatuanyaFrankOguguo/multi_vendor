@@ -220,4 +220,22 @@ storeRouter.get('/getseller', isStoreAuthenticated, catchAsync(async (req: Reque
 })
 )
 
+// stores log out router
+storeRouter.get('/logout', isStoreAuthenticated, catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.cookie('strs_tk', null, {
+            expires: new Date(0), // Expire the cookie
+            httpOnly: true,
+            sameSite: 'none', // Required for cross-site cookies
+            secure: true, // Required if using HTTPS
+        });
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully",
+        });
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while logging out"));
+    }
+}));
+
 export default storeRouter 
