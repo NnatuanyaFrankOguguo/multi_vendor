@@ -35,7 +35,7 @@ const DashboardSidebar = ({active, setOpen, subActive}) => {
         {id: 33, name: 'All Events', icon: MdOutlineLocalOffer, 
             subMenu: [
                 {id: 6, link: '/dashboard-events', name: 'Manage Events' },
-                {id: 7, link: '/dashboard-event-create', name: 'Create Event' },
+                {id: 7, link: '/dashboard-create-event', name: 'Create Event' },
                 //{id: 34, link: '/dashboard-event-edit', name: 'Edit Event', icon: FiPackage },    
             ]
         },

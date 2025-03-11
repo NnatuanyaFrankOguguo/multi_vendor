@@ -15,11 +15,11 @@ const eventSchema = new mongoose.Schema({
     },
     start_Date: {
         type: Date,
-        required: true,
+        required: false,
     },
-    Finish_Date: {
+    end_Date: {
         type: Date,
-        required: true,
+        required: false,
     },
     status: {
         type: String,
@@ -31,6 +31,9 @@ const eventSchema = new mongoose.Schema({
     originalPrice: {
         type: Number,
     },
+    highlights: {
+        type: String,
+    },
     discountPrice: {
         type: Number,
         required: [true, "Please enter your event product price!"],
@@ -39,18 +42,13 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         required: [true, "Please enter your event product stock!"],
     },
-    images: [
-        {
-            public_id: {
-                type: String,
-                required: true,
-            },
-            url: {
-                type: String,
-                required: true,
-            },
-        },
-    ],
+    images: {
+        type: [String],
+        validate: {
+            validator: (v) => v.length <= 5,
+            message: "Product images cannot exceed 5"
+        }
+    },
     storeId: {
         type: String,
         required: true,
@@ -59,13 +57,10 @@ const eventSchema = new mongoose.Schema({
         type: Object,
         required: true,
     },
-    sold_out: {
-        type: Number,
-        default: 0,
-    },
     createdAt: {
         type: Date,
         default: Date.now(),
     }
 });
-module.exports = mongoose.model("Event", eventSchema);
+const Event = mongoose.model("events", eventSchema);
+export default Event;

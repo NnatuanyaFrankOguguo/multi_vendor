@@ -14,6 +14,7 @@ import googleRouter from './controller/googleauth.js';
 import userRouter from './controller/Usercontroller.js';
 import storeRouter from './controller/Storecontroller.js';
 import productRouter from './controller/Productcontroller.js';
+import eventRouter from './controller/Eventcontroller.js';
 
 
 const  port : string | number = process.env.PORT || 5000;
@@ -51,6 +52,8 @@ app.use('/api/users', userRouter)
 app.use('/api/v2/stores', storeRouter)
 
 app.use('/api/v2/products', productRouter)
+
+app.use('/api/v2/events', eventRouter)
 
 
 ConnectDB();

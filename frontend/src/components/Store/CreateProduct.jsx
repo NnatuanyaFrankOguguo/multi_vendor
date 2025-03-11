@@ -24,10 +24,14 @@ const CreateProduct = () => {
     }
     else if(success) {
       toast.success("Product created successfully!");
-      navigate("/dashboard"); //after creating a new product, navigate to the dashboard all product page we dont have it yet we will create it later
-      //windows.location.reload() // this is to make sure that after the user is logged out token that been cleared from cookie storage the page refreshes that if the user goes back to the homepage the
+      window.location.reload() // this is to make sure that after the user is logged out token that been cleared from cookie storage the page refreshes that if the user goes back to the homepage the
+      navigate("/dashboard-all-products"); //after creating a new product, navigate to the dashboard all product page we dont have it yet we will create it later
+
+      dispatch({ type: 'ResetProductCreate' }); // this is to reset the success and error state in the product reducer
+
+
     }
-  }, [dispatch, error, success]); // when new dispatch will happen..asin a new product is created, useEffect will run again
+  }, [dispatch, error, success, navigate]); // when new dispatch will happen..asin a new product is created, useEffect will run again
 
 
   const [name, setName] = useState("");
@@ -62,7 +66,6 @@ const CreateProduct = () => {
  
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Product submitted");
 
     const newForm = new FormData();
 
@@ -81,8 +84,10 @@ const CreateProduct = () => {
     newForm.append('storeId', store._id);
 
     
-
-    dispatch(createProduct(newForm)); // meaning we are sending the new form data to the server via the createProduct action in the store actions file
+    if(newForm){
+      dispatch(createProduct(newForm)); // meaning we are sending the new form data to the server via the createProduct action in the store actions file
+    }
+    
 
 
   };

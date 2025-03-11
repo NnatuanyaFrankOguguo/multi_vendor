@@ -4,24 +4,26 @@ import mongoose, {Document, Schema, Types} from "mongoose";
 // Define an interface representing a User document in MongoDB
 
 export interface IEvent extends Document {
-    _id: Types.ObjectId;
     name: string;
     description: string;
     category: string;
-    start_Date: Date;
-    Finish_Date: Date;
+    start_Date?: Date;
+    end_Date?: Date;
     store: Object;
+    images: string[];
     storeId: string;
-    status: string;
+    status?: string;
     tags?: string;
     originalPrice: number;
     discountPrice: number;
+    highlights?: string;
     stock: number;
+    createdAt: Date;
 }
 
 // Import models
 
-const eventSchema = new mongoose.Schema({
+const eventSchema: Schema<IEvent> = new mongoose.Schema({
     name:{
         type: String,
         required:[true,"Please enter your event product name!"],
@@ -36,11 +38,11 @@ const eventSchema = new mongoose.Schema({
     },
     start_Date: {
         type: Date,
-        required: true,
+        required: false,
       },
-      Finish_Date: {
+      end_Date: {
         type: Date,
-        required: true,
+        required: false,
       },
       status: {
         type: String,
@@ -52,6 +54,10 @@ const eventSchema = new mongoose.Schema({
     originalPrice:{
         type: Number,
     },
+    highlights:{
+        type: String,   
+
+    },
     discountPrice:{
         type: Number,
         required: [true,"Please enter your event product price!"],
@@ -60,18 +66,13 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         required: [true,"Please enter your event product stock!"],
     },
-    images:[
-        {
-            public_id: {
-                type: String,
-                required: true,
-              },
-              url: {
-                type: String,
-                required: true,
-              },
-        },
-    ],
+    images: {
+        type: [String],
+        validate: {
+            validator: (v: string[]) => v.length <= 5,
+            message: "Product images cannot exceed 5"
+        }
+    },
     storeId:{
         type: String,
         required: true,
@@ -80,14 +81,11 @@ const eventSchema = new mongoose.Schema({
         type: Object,
         required: true,
     },
-    sold_out:{
-        type: Number,
-        default: 0,
-    },
     createdAt:{
         type: Date,
         default: Date.now(),
     }
 });
 
-module.exports = mongoose.model("Event", eventSchema);
+const Event = mongoose.model<IEvent>("events", eventSchema);
+export default Event;

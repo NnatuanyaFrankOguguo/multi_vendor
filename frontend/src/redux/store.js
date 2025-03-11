@@ -2,12 +2,14 @@ import {configureStore} from '@reduxjs/toolkit';
 import {userReducer} from './reducers/user.js';
 import { storeReducer } from './reducers/store.jsx';
 import { productReducer } from './reducers/product.jsx';
+import { eventReducer } from './reducers/event.jsx';
 
 const Store = configureStore({
     reducer: {
         user: userReducer,
         store: storeReducer,
-        product: productReducer
+        product: productReducer,
+        event : eventReducer
     }
 });
 
