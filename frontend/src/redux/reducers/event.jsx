@@ -15,7 +15,7 @@ export const eventReducer = createReducer(initialState, (builder) => {
             // we set isLoading to true when a new event request is made
         })
         .addCase('eventCreateSuccess', (state, action) => {
-            state.event = action.payload;
+            state.events = action.payload;
             state.isLoading = false;
             // when the event request is successful, we load the events into the state and set isLoading to false
             state.success = true;
@@ -30,19 +30,20 @@ export const eventReducer = createReducer(initialState, (builder) => {
             state.success = false;
             state.error = null;
           })
+
         
         // GET ALL eventS OF A STORE
-        .addCase('getAlleventStoreRequest', (state) => {
+        .addCase('getAllEventStoreRequest', (state) => {
             state.isLoading = true;
             // we set isLoading to true when we request all events of a store
         })
-        .addCase('getAlleventStoreSuccess', (state, action) => {
+        .addCase('getAllEventStoreSuccess', (state, action) => {
             state.events = action.payload;
             state.isLoading = false;
             // when the request is successful, we load the events into the state and set isLoading to false
             state.success = true;
         })
-        .addCase('getAlleventStoreFail', (state, action) => {
+        .addCase('getAllEventStoreFail', (state, action) => {
             state.error = action.payload;
             state.isLoading = false;
             // when the request fails, we set the error in the state and set isLoading to false

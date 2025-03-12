@@ -6,6 +6,7 @@ import {z} from 'zod'
 import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
 import Store, { IStore } from "../models/Store.js";
 import isStoreAuthenticated from "../middleware/storeauth.js";
+import fs from 'fs/promises'
 
 
 
@@ -62,18 +63,38 @@ productRouter.get('/get-all-products-store/:id', catchAsync(async (req: Request,
     }
 }))
 
+const deleteFile = async (filepath: string) => {
+    try {
+        await fs.unlink(filepath)
+        console.log("File deleted successfully:", filepath);
+
+    } catch (err) {
+        console.error("File deletion error:", err); // Just log, don't crash flow
+    }
+}
+
 //delete product of a store
 productRouter.delete('/delete-product/:id', isStoreAuthenticated , catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const productId = req.params.id;
 
-        const product = await Product.findByIdAndDelete(productId)
+        const product = await Product.findById(productId)
 
         if(!product){
 
             return next(createvalidateError("Product ID is invalid!"))
            
         }
+
+        // Delete images from the server
+        const imageUrls = product.images;
+        imageUrls.forEach(async (image) => {
+            const filepath = `uploads/${image}`
+            await deleteFile(filepath)
+        })
+
+        await Product.findByIdAndDelete(productId)
+
         res.status(201).json({
             success: true,
             message: 'Product deleted successfully'

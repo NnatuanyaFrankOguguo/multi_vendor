@@ -6,7 +6,7 @@ import {z} from 'zod'
 import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
 import Store, { IStore } from "../models/Store.js";
 import isStoreAuthenticated from "../middleware/storeauth.js";
-
+import fs from 'fs/promises'
 
 
 const eventRouter = express.Router();
@@ -47,5 +47,65 @@ eventRouter.post('/create-event', upload.array("images"), catchAsync(async (req:
         return next(createDataBaseError("An error occurred while creating a event"));
     }
 }))
+
+eventRouter.get('/get-all-events-store/:id', catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const events = await Event.find({storeId : req.params.id})
+
+        res.status(201).json({
+            success: true,
+            events,
+        })
+
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while fetching events"));  
+    }
+}))
+
+const deleteFile = async (filepath: string) => {
+    try {
+        await fs.unlink(filepath)
+        console.log("File deleted successfully:", filepath);
+
+    } catch (err) {
+        console.error("File deletion error:", err); // Just log, don't crash flow
+    }
+}
+
+//delete product of a store
+eventRouter.delete('/delete-event/:id', isStoreAuthenticated , catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const eventId = req.params.id;
+
+        const event = await Event.findById(eventId)
+
+        if(!event){
+
+            return next(createvalidateError("Event ID is invalid!"))
+           
+        }
+
+        // Delete images
+        const imageUrls = event.images
+        imageUrls.forEach(async (image) => {
+            const filepath = `uploads/${image}`
+            await deleteFile(filepath)
+        })
+
+        await Event.findByIdAndDelete(eventId)
+
+
+        res.status(201).json({
+            success: true,
+            message: 'Event deleted successfully'
+        })
+        
+
+    } catch (error) {
+        return next(createDataBaseError("An error occurred while deleting a event"));
+    }
+})
+)
+
 
 export default eventRouter;

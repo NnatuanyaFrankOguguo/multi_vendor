@@ -14,6 +14,7 @@ export interface IEvent extends Document {
     storeId: string;
     status?: string;
     tags?: string;
+    soldOut?: number;
     originalPrice: number;
     discountPrice: number;
     highlights?: string;
@@ -80,6 +81,10 @@ const eventSchema: Schema<IEvent> = new mongoose.Schema({
     store:{
         type: Object,
         required: true,
+    },
+    soldOut:{
+        type: Number,
+        default: 0,
     },
     createdAt:{
         type: Date,

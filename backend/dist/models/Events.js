@@ -57,6 +57,10 @@ const eventSchema = new mongoose.Schema({
         type: Object,
         required: true,
     },
+    soldOut: {
+        type: Number,
+        default: 0,
+    },
     createdAt: {
         type: Date,
         default: Date.now(),

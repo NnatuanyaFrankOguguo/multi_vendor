@@ -3,20 +3,21 @@ import express from "express";
 import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.js";
 import path from "path";
 import { upload } from "../multer.js";
-import fs from 'fs';
+import fs from 'fs/promises';
 import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import { catchAsync } from "../middleware/catchAsync.js";
 import sendToken from "../utils/jwtToken.js";
 import isAuthenticated from "../middleware/auth.js";
 const userRouter = express.Router();
-const deleteFile = (filepath, next) => {
-    fs.unlink(filepath, (err) => {
-        if (err) {
-            console.error("file deletion error:", err);
-            return next(createDataBaseError("Error deleting file"));
-        }
-    });
+const deleteFile = async (filepath) => {
+    try {
+        await fs.unlink(filepath);
+        console.log("File deleted successfully:", filepath);
+    }
+    catch (err) {
+        console.error("File deletion error:", err); // Just log, don't crash flow
+    }
 };
 // USERS SIGN UP
 userRouter.post('/create-user', upload.single("file"), async (req, res, next) => {
@@ -26,9 +27,9 @@ userRouter.post('/create-user', upload.single("file"), async (req, res, next) =>
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             if (req.file) {
-                const filename = req.file?.filename;
-                const filepath = `uploads/${filename}`;
-                deleteFile(filepath, next); //Clean up uploaded file if user exists
+                const fileName = req.file?.filename;
+                const filepath = `uploads/${fileName}`;
+                await deleteFile(filepath); //Clean up uploaded file if user exists
             }
             //DO RES.STATUS. (SEND USER ALREADY EXIST TO THE FRONTEND AND USE POP UP TO DISPLAY IT FOR THEM)
             return next(createvalidateError("User already exists"));
