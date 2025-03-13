@@ -7,6 +7,7 @@ import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.
 import Store, { IStore } from "../models/Store.js";
 import isStoreAuthenticated from "../middleware/storeauth.js";
 import fs from 'fs/promises'
+import path from 'path'
 
 
 const eventRouter = express.Router();
@@ -62,15 +63,15 @@ eventRouter.get('/get-all-events-store/:id', catchAsync(async (req: Request, res
     }
 }))
 
-const deleteFile = async (filepath: string) => {
+const deleteFile = async (filename : string) => {
     try {
-        await fs.unlink(filepath)
-        console.log("File deleted successfully:", filepath);
-
-    } catch (err) {
-        console.error("File deletion error:", err); // Just log, don't crash flow
+      const filePath = path.join(process.cwd(), 'uploads', filename); // properly join path without extra slashes
+      await fs.unlink(filePath);
+      console.log('File deleted:', filePath);
+    } catch (error) {
+      console.error('File deletion error:', error);
     }
-}
+  };
 
 //delete product of a store
 eventRouter.delete('/delete-event/:id', isStoreAuthenticated , catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -87,10 +88,11 @@ eventRouter.delete('/delete-event/:id', isStoreAuthenticated , catchAsync(async 
 
         // Delete images
         const imageUrls = event.images
-        imageUrls.forEach(async (image) => {
-            const filepath = `uploads/${image}`
-            await deleteFile(filepath)
-        })
+
+        for(const image of imageUrls){
+            const imageName = image.replace('/images/', '');
+            await deleteFile(imageName);
+        }
 
         await Event.findByIdAndDelete(eventId)
 

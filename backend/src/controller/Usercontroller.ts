@@ -24,15 +24,15 @@ interface UserPayload {
 
 }
 
-const deleteFile = async (filepath: string) => {
+const deleteFile = async (filename : string) => {
     try {
-        await fs.unlink(filepath)
-        console.log("File deleted successfully:", filepath);
-
-    } catch (err) {
-        console.error("File deletion error:", err); // Just log, don't crash flow
+      const filePath = path.join(process.cwd(), 'uploads', filename); // properly join path without extra slashes
+      await fs.unlink(filePath);
+      console.log('File deleted:', filePath);
+    } catch (error) {
+      console.error('File deletion error:', error);
     }
-}
+  };
 
 
 // USERS SIGN UP
@@ -45,7 +45,7 @@ userRouter.post('/create-user', upload.single("file"), async (req : Request, res
         {
             if(req.file){
                 const fileName = req.file?.filename;
-                const filepath = `uploads/${fileName}`;
+                const filepath = `${fileName}`;
                 await deleteFile(filepath) //Clean up uploaded file if user exists
             }
             //DO RES.STATUS. (SEND USER ALREADY EXIST TO THE FRONTEND AND USE POP UP TO DISPLAY IT FOR THEM)

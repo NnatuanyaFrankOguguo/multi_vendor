@@ -10,13 +10,14 @@ import { catchAsync } from "../middleware/catchAsync.js";
 import sendToken from "../utils/jwtToken.js";
 import isAuthenticated from "../middleware/auth.js";
 const userRouter = express.Router();
-const deleteFile = async (filepath) => {
+const deleteFile = async (filename) => {
     try {
-        await fs.unlink(filepath);
-        console.log("File deleted successfully:", filepath);
+        const filePath = path.join(process.cwd(), 'uploads', filename); // properly join path without extra slashes
+        await fs.unlink(filePath);
+        console.log('File deleted:', filePath);
     }
-    catch (err) {
-        console.error("File deletion error:", err); // Just log, don't crash flow
+    catch (error) {
+        console.error('File deletion error:', error);
     }
 };
 // USERS SIGN UP
@@ -28,7 +29,7 @@ userRouter.post('/create-user', upload.single("file"), async (req, res, next) =>
         if (existingUser) {
             if (req.file) {
                 const fileName = req.file?.filename;
-                const filepath = `uploads/${fileName}`;
+                const filepath = `${fileName}`;
                 await deleteFile(filepath); //Clean up uploaded file if user exists
             }
             //DO RES.STATUS. (SEND USER ALREADY EXIST TO THE FRONTEND AND USE POP UP TO DISPLAY IT FOR THEM)

@@ -6,6 +6,7 @@ import { createvalidateError, createDataBaseError } from "../utils/ErrorHandler.
 import Store from "../models/Store.js";
 import isStoreAuthenticated from "../middleware/storeauth.js";
 import fs from 'fs/promises';
+import path from 'path';
 const eventRouter = express.Router();
 //create a new product
 eventRouter.post('/create-event', upload.array("images"), catchAsync(async (req, res, next) => {
@@ -51,13 +52,14 @@ eventRouter.get('/get-all-events-store/:id', catchAsync(async (req, res, next) =
         return next(createDataBaseError("An error occurred while fetching events"));
     }
 }));
-const deleteFile = async (filepath) => {
+const deleteFile = async (filename) => {
     try {
-        await fs.unlink(filepath);
-        console.log("File deleted successfully:", filepath);
+        const filePath = path.join(process.cwd(), 'uploads', filename); // properly join path without extra slashes
+        await fs.unlink(filePath);
+        console.log('File deleted:', filePath);
     }
-    catch (err) {
-        console.error("File deletion error:", err); // Just log, don't crash flow
+    catch (error) {
+        console.error('File deletion error:', error);
     }
 };
 //delete product of a store
@@ -70,10 +72,10 @@ eventRouter.delete('/delete-event/:id', isStoreAuthenticated, catchAsync(async (
         }
         // Delete images
         const imageUrls = event.images;
-        imageUrls.forEach(async (image) => {
-            const filepath = `uploads/${image}`;
-            await deleteFile(filepath);
-        });
+        for (const image of imageUrls) {
+            const imageName = image.replace('/images/', '');
+            await deleteFile(imageName);
+        }
         await Event.findByIdAndDelete(eventId);
         res.status(201).json({
             success: true,
