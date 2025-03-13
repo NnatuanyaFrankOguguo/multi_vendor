@@ -32,10 +32,7 @@ const CreateEvent = () => {
        dispatch({ type: 'ReseteventCreate' });
         // this is to reset the success and error state in the product reducer
        //window.location.reload() // this is to make sure that after the user is logged out token that been cleared from cookie storage the page refreshes that if the user goes back to the homepage the
-      //  navigate("/dashboard-events"); //after creating a new product, navigate to the dashboard all product page we dont have it yet we will create it later
- 
-      
-        
+      navigate("/dashboard-events"); //after creating a new product, navigate to the dashboard all product page we dont have it yet we will create it later
 
     
  
