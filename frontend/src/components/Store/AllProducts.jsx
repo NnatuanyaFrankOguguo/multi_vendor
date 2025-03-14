@@ -31,7 +31,7 @@ const AllProducts = () => {
         {field : "category", headerName : "Category", minWidth: 150, flex: 0.7},
         {field : "stock", headerName : "Stock", minWidth: 80, flex: 0.5},
         {field : "sold", headerName : "Sold out", minWidth: 80, flex: 0.5},
-        {field : "", headerName : "Preview", minWidth: 80, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
+        {field : "Preview", headerName : "Preview", minWidth: 80, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
             const d = params.row.name
             const product_name = d.replace(/\s+/g, '-'); //to remove the spaces on the initial name so each word will be able to come up in the search
             return (
@@ -44,7 +44,7 @@ const AllProducts = () => {
                 </>) 
             }
         },//add more columns as per your requirement,
-        {field : "Delete", headerName : " ", minWidth: 120, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
+        {field : "Delete", headerName : "Delete", minWidth: 120, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
         
             return (
                 <>
@@ -78,7 +78,7 @@ const AllProducts = () => {
     <>
         {
             isLoading ? <Loader /> : (
-                  <div style={{ height: 400, width: '100%' }} >
+                  <div style={{ minHeight: 400, width: '100%' }} >
                     <DataGrid rows={rows} columns={columns} pageSize={10} disableSelectionOnClick />
                   </div>
                 

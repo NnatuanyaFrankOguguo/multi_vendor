@@ -39,8 +39,6 @@ const Signup = () => {
         try {
             // const config = {headers: {'Content-Type': 'multipart/form-data'}}
             const response = await axios.post(`${server}/api/users/create-user`, formData, config);
-            //alert(response.data.message) //do sweetalert
-            console.log(response.data.message);
             toast.success(response.data.message)
             //PUT A LOADER ICON
             // Clear the form
@@ -51,7 +49,7 @@ const Signup = () => {
             setAvatar(null)
             // navigate('/')
         } catch (error) {
-            console.error(error.response)
+            
             toast.error(error.response.data.message)
             
         }

@@ -6,7 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import {LoginPage, SignupPage, VerifyemailPage, Homepage, ProductPage, BestSellingPage, EventsPage, 
   FAQPage, ProductDetailsPage, ProfilePage, StoreCreatePage, StoreVerifyemailPage, LoginStorePage  } from '../src/Routes/Routes.jsx'
 
-import {StoreDashboardPage, StoreCreateProduct, StoreAllProducts, StoreCreateEvent, StoreAllEvents} from '../src/Routes/StoreRoutes.jsx'
+import {StoreDashboardPage, StoreCreateProduct, StoreAllProducts, StoreCreateEvent, StoreAllEvents,
+  StoreAllCoupons
+} from '../src/Routes/StoreRoutes.jsx'
 import { loadUser } from './redux/actions/user.js';
 import { loadStore } from './redux/actions/store.jsx';
 import { useDispatch} from 'react-redux'
@@ -77,6 +79,11 @@ const App = () => {
         <Route path='/dashboard-events' element = {
           <SellerProtectedRoutes >
             <StoreAllEvents />
+          </SellerProtectedRoutes>}>
+        </Route>
+        <Route path='/dashboard-coupons' element = {
+          <SellerProtectedRoutes >
+            <StoreAllCoupons />
           </SellerProtectedRoutes>}>
         </Route>
 

@@ -188,8 +188,9 @@ userRouter.post('/login-user', catchAsync(async (req: Request, res: Response, ne
  
          // Generate token for the user and send it to the frontend
         sendToken(logUser, 201, res);
-    } catch (error) {
-        return next(createDataBaseError("An error occurred while logging in"));
+    } catch (error : unknown) {
+        const err = error as Error;
+        next(createDataBaseError(err.message));
     }
 }));
 

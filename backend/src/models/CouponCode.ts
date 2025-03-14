@@ -15,7 +15,7 @@ export interface ICoupon extends Document {
     discountType: DiscountType;
     startDate: Date;
     endDate: Date;
-    isActive: boolean;
+    isActive?: boolean;
     usedCount: number;
     storeId: Types.ObjectId;
     applicableProducts: Types.ObjectId[];
@@ -71,7 +71,7 @@ const couponSchema = new Schema<ICoupon>({
         required: true
     },
     applicableProducts: [{
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Product'
     }],
     minPurchaseAmount: {
@@ -87,8 +87,8 @@ const couponSchema = new Schema<ICoupon>({
 
 // Indexes
 couponSchema.index({ code: 1 });
-couponSchema.index({ expirationDate: 1 });
-couponSchema.index({ active: 1 });
+couponSchema.index({ endDate: 1 });
+couponSchema.index({ isActive: 1 });
 
 // Pre-save validation
 couponSchema.pre<ICoupon>('save', function(next) {
@@ -101,13 +101,13 @@ couponSchema.pre<ICoupon>('save', function(next) {
   }
 });
 
-// Static methods
+// Static methods To validate a coupon by its code before applying it.
 couponSchema.statics = {
   async isValid(code: string): Promise<boolean> {
-    const coupon = await this.findOne({ code, active: true });
+    const coupon = await this.findOne({ code, isActive: true });
     
     if (!coupon) return false;
-    if (coupon.expirationDate && coupon.expirationDate < new Date()) return false;
+    if (coupon.endDate && coupon.endDate < new Date()) return false;
     if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) return false;
     
     return true;
@@ -117,8 +117,8 @@ couponSchema.statics = {
 // Instance methods
 couponSchema.methods = {
   async applyDiscount(userId: Types.ObjectId, cartAmount: number): Promise<number> {
-    if (!this.active) throw new Error('Coupon is not active');
-    if (this.expirationDate && this.expirationDate < new Date()) throw new Error('Coupon has expired');
+    if (!this.isActive) throw new Error('Coupon is not active');
+    if (this.endDate && this.endDate < new Date()) throw new Error('Coupon has expired');
     if (this.maxUses && this.usedCount >= this.maxUses) throw new Error('Coupon usage exceeded');
     if (this.minPurchaseAmount && cartAmount < this.minPurchaseAmount) {
       throw new Error(`Minimum purchase amount of ${this.minPurchaseAmount} required`);
@@ -145,7 +145,9 @@ export type CouponModel = Model<ICoupon> & {
   isValid: (code: string) => Promise<boolean>;
 };
 
-export const Coupon: CouponModel = model<ICoupon, CouponModel>('Coupon', couponSchema);
+const Coupon : CouponModel = model<ICoupon, CouponModel>('Coupon', couponSchema);
+
+export default Coupon;
 
 // Create a coupon & How to use
 // const seasonalCoupon = new Coupon({

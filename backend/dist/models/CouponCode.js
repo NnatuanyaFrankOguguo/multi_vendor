@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { Types } from 'mongoose';
 // Enums for discount types
 export var DiscountType;
 (function (DiscountType) {
@@ -49,7 +48,7 @@ const couponSchema = new Schema({
         required: true
     },
     applicableProducts: [{
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'Product'
         }],
     minPurchaseAmount: {
@@ -64,8 +63,8 @@ const couponSchema = new Schema({
 });
 // Indexes
 couponSchema.index({ code: 1 });
-couponSchema.index({ expirationDate: 1 });
-couponSchema.index({ active: 1 });
+couponSchema.index({ endDate: 1 });
+couponSchema.index({ isActive: 1 });
 // Pre-save validation
 couponSchema.pre('save', function (next) {
     if (this.discountType === DiscountType.PERCENTAGE && this.discountValue > 100) {
@@ -78,13 +77,13 @@ couponSchema.pre('save', function (next) {
         next();
     }
 });
-// Static methods
+// Static methods To validate a coupon by its code before applying it.
 couponSchema.statics = {
     async isValid(code) {
-        const coupon = await this.findOne({ code, active: true });
+        const coupon = await this.findOne({ code, isActive: true });
         if (!coupon)
             return false;
-        if (coupon.expirationDate && coupon.expirationDate < new Date())
+        if (coupon.endDate && coupon.endDate < new Date())
             return false;
         if (coupon.maxUses && coupon.usedCount >= coupon.maxUses)
             return false;
@@ -94,9 +93,9 @@ couponSchema.statics = {
 // Instance methods
 couponSchema.methods = {
     async applyDiscount(userId, cartAmount) {
-        if (!this.active)
+        if (!this.isActive)
             throw new Error('Coupon is not active');
-        if (this.expirationDate && this.expirationDate < new Date())
+        if (this.endDate && this.endDate < new Date())
             throw new Error('Coupon has expired');
         if (this.maxUses && this.usedCount >= this.maxUses)
             throw new Error('Coupon usage exceeded');
@@ -117,7 +116,8 @@ couponSchema.methods = {
         return Math.max(0, cartAmount - discount);
     }
 };
-export const Coupon = model('Coupon', couponSchema);
+const Coupon = model('Coupon', couponSchema);
+export default Coupon;
 // Create a coupon & How to use
 // const seasonalCoupon = new Coupon({
 //     code: 'HARVEST24',
