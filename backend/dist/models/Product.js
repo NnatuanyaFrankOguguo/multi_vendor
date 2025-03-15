@@ -127,8 +127,16 @@ productSchema.pre("save", async function (next) {
     // 2️⃣ Update Average Rating Before Saving
     if (product.isModified("reviews")) { // Only update if `reviews` array changes
         const reviews = await mongoose.model("Review").find({ product: product._id });
+        // Calculate the total rating
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-        product.rating = reviews.length > 0 ? totalRating / reviews.length : 0;
+        // Calculate the average rating
+        let avgRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+        // Apply scaling to ensure the minimum rating is 3.5
+        product.rating = 3.5 + (avgRating * 1.5 / 5);
+        // Ensure it doesn't exceed 5
+        if (product.rating > 5) {
+            product.rating = 5;
+        }
     }
     // 3️⃣ Reset Expired Discounts Before Saving
     if (product.discountExpiresAt && product.discountExpiresAt <= now) {

@@ -18,9 +18,12 @@ const AllCoupons = () => {
     //we are not using API call cause we are displaying our products in the store profile and here also so in order to not query the database multiple times
     //you can fetch data from the database once and store it in the store state.
     const [open, setOpen] = useState(false);
-    const {products, isLoading} = useSelector((state) => state.product);
     const {store} = useSelector((state) => state.store);
+    const {products, isLoading} = useSelector((state) => state.product);
     
+    const [isloading, setIsloading] = useState(false);
+    const [couponData, setCouponData] = useState([]);
+
     const [code, setCode] = useState('');
     const [discountValue, setDiscountValue] = useState('');
     const [discountType, setDiscountType] = useState('');
@@ -35,34 +38,42 @@ const AllCoupons = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch( getAllProducts(store._id));
+        const fetchCoupons = async (id) => {
+            try{
+                setIsloading(true);
+                const response = await axios.get(`${server}/api/v2/coupons/get-all-coupons/${id}`, {withCredentials: true});
+                setCouponData(response.data.coupons);
+                setIsloading(false);
+            }catch(err){
+                console.log(err)
+                toast.error(err.response.data.message);
+                setIsloading(false);
+            } 
+       }
+       fetchCoupons(store._id);
+       dispatch( getAllProducts(store._id));
     }, [dispatch]);
 
-    const handleDelete = (id) => {
-        dispatch(deleteProduct(id));
-        window.location.reload(); //to refresh the page after deleting a product
+    const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`${server}/api/v2/coupons/delete-coupon/${id}`, {withCredentials: true});
+            toast.success(response.data.message);
+            window.location.reload(); //to refresh the page after deleting a product
+        } catch (error) {
+            toast.error(error.message);
+        }
+        
     }
 
     const columns = [
-        {field : "id", headerName : "Product Id", minWidth: 150, flex: 0.7},
-        {field : "name", headerName : "Name", minWidth: 150, flex: 0.7},
-        {field : "price", headerName : "Price", minWidth: 100, flex: 0.7},
-        {field : "category", headerName : "Category", minWidth: 150, flex: 0.7},
-        {field : "stock", headerName : "Stock", minWidth: 80, flex: 0.5},
-        {field : "sold", headerName : "Sold out", minWidth: 80, flex: 0.5},
-        {field : "Preview", headerName : "Preview", minWidth: 80, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
-            const d = params.row.name
-            const product_name = d.replace(/\s+/g, '-'); //to remove the spaces on the initial name so each word will be able to come up in the search
-            return (
-                <>
-                    <Link to={`/product/${product_name}`}>
-                        <Button>
-                            <AiOutlineEye size={20} />
-                        </Button>
-                    </Link>
-                </>) 
-            }
-        },//add more columns as per your requirement,
+        {field : "id", headerName : "Code", minWidth: 150, flex: 0.7},
+        {field : "price", headerName : "Discount Value", minWidth: 100, flex: 0.5},
+        {field : "usedcount", headerName : "Used Count", minWidth: 150, flex: 0.5},
+        {field : "applicableProducts", headerName : "Applicable Products", minWidth: 200, flex: 0.8},
+        {field : "isactive", headerName : "isActive", minWidth: 100, flex: 0.5},
+        {field : "endDate", headerName : "End Date", minWidth: 100, flex: 0.5},
+        
+        
         {field : "Delete", headerName : "Delete", minWidth: 120, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
         
             return (
@@ -79,15 +90,15 @@ const AllCoupons = () => {
 
     const rows = [ ];
 
-    products && products.forEach((item) => {
+    couponData && couponData.forEach((item) => {
         rows.push({
-            id: item._id,
-            name: item.name,
-            price: "₦" + item.originalPrice,
-            //discountPrice: `₦${item.discountPrice} - ${item.discountPercentage}%`,
-            category: item.category,
-            stock: item.stock,
-            sold: item.sold,
+            id: item.code,
+            price: "₦" + item.discountValue,
+            usedcount : item.usedCount,
+            applicableProducts: item.applicableProducts.map((productId) => products.find((product) => product._id === productId).name).join(', '),
+            isactive: item.isActive,
+            endDate: new Date(item.endDate).toISOString().slice(0, 10)
+            
         })
     })
 
@@ -114,6 +125,8 @@ const AllCoupons = () => {
               });
             toast.success(response.data.message);
             setOpen(false);
+            // Clear the form
+            window.location.reload(); //to refresh the page after adding a new product
             
         } catch (error) {
             toast.error(error.response.data.message);   

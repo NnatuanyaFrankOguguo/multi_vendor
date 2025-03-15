@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 // Enums for discount types
 export var DiscountType;
 (function (DiscountType) {
@@ -78,18 +78,6 @@ couponSchema.pre('save', function (next) {
     }
 });
 // Static methods To validate a coupon by its code before applying it.
-couponSchema.statics = {
-    async isValid(code) {
-        const coupon = await this.findOne({ code, isActive: true });
-        if (!coupon)
-            return false;
-        if (coupon.endDate && coupon.endDate < new Date())
-            return false;
-        if (coupon.maxUses && coupon.usedCount >= coupon.maxUses)
-            return false;
-        return true;
-    }
-};
 // Instance methods
 couponSchema.methods = {
     async applyDiscount(userId, cartAmount) {
@@ -116,7 +104,7 @@ couponSchema.methods = {
         return Math.max(0, cartAmount - discount);
     }
 };
-const Coupon = model('Coupon', couponSchema);
+const Coupon = mongoose.model('Coupon', couponSchema);
 export default Coupon;
 // Create a coupon & How to use
 // const seasonalCoupon = new Coupon({

@@ -9,9 +9,8 @@ export interface IEvent extends Document {
     category: string;
     start_Date?: Date;
     end_Date?: Date;
-    store: Object;
+    storeInfo: Types.ObjectId; // Reference to Store model;
     images: string[];
-    storeId: string;
     status?: string;
     tags?: string;
     soldOut?: number;
@@ -74,13 +73,10 @@ const eventSchema: Schema<IEvent> = new mongoose.Schema({
             message: "Product images cannot exceed 5"
         }
     },
-    storeId:{
-        type: String,
-        required: true,
-    },
-    store:{
-        type: Object,
-        required: true,
+    storeInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store',
+        required: true
     },
     soldOut:{
         type: Number,

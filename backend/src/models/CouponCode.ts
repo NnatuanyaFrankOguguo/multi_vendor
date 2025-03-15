@@ -1,4 +1,4 @@
-import {Document, Schema, model, Model} from 'mongoose';
+import  mongoose, {Document, Schema, model} from 'mongoose';
 import { Types } from 'mongoose';
 
 // Enums for discount types
@@ -24,6 +24,7 @@ export interface ICoupon extends Document {
     updatedAt: Date;
     userMaxUses?: number;
     usedBy?: Types.ObjectId[];
+    applyDiscount(userId: Types.ObjectId, cartAmount: number): Promise<number>; // Fixed return type
 
 }
 
@@ -102,17 +103,6 @@ couponSchema.pre<ICoupon>('save', function(next) {
 });
 
 // Static methods To validate a coupon by its code before applying it.
-couponSchema.statics = {
-  async isValid(code: string): Promise<boolean> {
-    const coupon = await this.findOne({ code, isActive: true });
-    
-    if (!coupon) return false;
-    if (coupon.endDate && coupon.endDate < new Date()) return false;
-    if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) return false;
-    
-    return true;
-  }
-};
 
 // Instance methods
 couponSchema.methods = {
@@ -141,11 +131,7 @@ couponSchema.methods = {
   }
 };
 
-export type CouponModel = Model<ICoupon> & {
-  isValid: (code: string) => Promise<boolean>;
-};
-
-const Coupon : CouponModel = model<ICoupon, CouponModel>('Coupon', couponSchema);
+const Coupon = mongoose.model<ICoupon>('Coupon', couponSchema);
 
 export default Coupon;
 
