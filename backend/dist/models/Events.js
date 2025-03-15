@@ -49,13 +49,10 @@ const eventSchema = new mongoose.Schema({
             message: "Product images cannot exceed 5"
         }
     },
-    storeId: {
-        type: String,
-        required: true,
-    },
-    store: {
-        type: Object,
-        required: true,
+    storeInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store',
+        required: true
     },
     soldOut: {
         type: Number,

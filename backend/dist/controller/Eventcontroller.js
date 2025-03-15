@@ -14,8 +14,8 @@ eventRouter.post('/create-event', upload.array("images"), catchAsync(async (req,
     try {
         // we will find the store by id first... to be able to indicate where the product will be stored in the database
         const storeId = req.body.storeId;
-        const storeInfo = await Store.findById(storeId);
-        if (storeInfo) {
+        const store = await Store.findById(storeId);
+        if (store) {
             // Validate images
             const files = req.files; // Files might be undefined
             //bcos the incoming image from the frontend is multiple images which will be stored as an array
@@ -23,7 +23,7 @@ eventRouter.post('/create-event', upload.array("images"), catchAsync(async (req,
             const imageUrls = Array.isArray(files) ? files.map((file) => `/images/${file.filename}`) : []; //This ensures imageUrls is never undefined and avoids unnecessary error handling.
             const eventData = req.body;
             eventData.images = imageUrls;
-            eventData.store = storeInfo;
+            eventData.storeInfo = store;
             // Create product
             const event = await Event.create(eventData);
             res.status(201).json({

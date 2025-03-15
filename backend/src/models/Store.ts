@@ -43,10 +43,8 @@ export interface IStore extends Document {
     taxId?: string;
     certifications?: string[];
     deliveryOptions?: string[];
-    rating?: number;
-    reviews: IReview[];
-    totalRatings: number;
-    totalReviews: number;
+    rating?: number; //Average rating from product Reviews then calculate it below and add here
+    reviews?: Types.ObjectId[];
     transactions: [
         {
             amount: number;
@@ -158,16 +156,12 @@ const storeSchema: Schema<IStore> = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "Review"
       }],
-    totalRatings: {
+    rating: {
         type: Number,
         default: 0,
         min: 0,
-    },
-    totalReviews: {
-        type: Number,
-        default: 0,
-        
-    },   
+        max: 5,
+    },  
    
     resetPasswordToken: String,
     resetPasswordTime: Date,
@@ -185,23 +179,44 @@ const storeSchema: Schema<IStore> = new mongoose.Schema({
 );
 
 // Automatically calculate rating and total reviews
-storeSchema.pre("save", function (next) {
-    if(this.isModified("reviews")) {
-        const total = this.reviews.reduce((acc, review) => acc + review.rating, 0);
-        this.totalRatings = total;
-        this.totalReviews = this.reviews.length;
-        this.rating = this.totalReviews > 0 ? total / this.totalReviews : 0;
-    }
-    next();
-})
+// storeSchema.pre("save", function (next) {
+//     if(this.isModified("reviews")) {
+//         const total = this.reviews.reduce((acc, review) => acc + review.rating, 0);
+//         this.totalRatings = total;
+//         this.totalReviews = this.reviews.length;
+//         this.rating = this.totalReviews > 0 ? total / this.totalReviews : 0;
+//     }
+//     next();
+// })
 
 // Pre-save hook to make email lowercase before saving to database
 
-storeSchema.pre("save", function(next) {
+storeSchema.pre("save", async function(next) {
     if (this.isModified("email")) {
         this.email = this.email.toLowerCase();
     }
-    next();
+
+    // Ensure `this` is the product document
+        const store = this as IStore;
+
+
+    // 2️⃣ Update Average Rating Before Saving
+    if (store.isModified("reviews")) { // Only update if `reviews` array changes
+        const reviews = await mongoose.model("Review").find({ store: store._id });
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        let avgRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+
+        // Apply scaling to ensure the minimum rating is 3.5
+        store.rating = 3.5 + (avgRating * 1.5 / 5)
+
+        // Ensure it doesn't exceed 5
+        if (store.rating > 5) {
+            store.rating = 5;
+        }
+
+    }
+
+    next(); // Move to the next middleware
 });
 
 // Hash password before saving to database
